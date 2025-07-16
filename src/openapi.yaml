@@ -1,0 +1,173 @@
+openapi: 3.0.0
+info:
+  title: API Registry Service
+  description: A centralized registry for API specifications across the Solid Microservices ecosystem
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:3005'
+    description: Local development server
+  - url: 'http://api-registry:3005'
+    description: Docker container
+paths:
+  /specs:
+    post:
+      summary: Register API Specification
+      description: Registers a new API specification or updates an existing one
+      security:
+        - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpecRegistrationRequest'
+      responses:
+        '201':
+          description: Specification registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpecRegistrationResponse'
+        '400':
+          description: Invalid request body or specification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /specs/{serviceName}/{version}:
+    get:
+      summary: Get API Specification
+      description: Retrieves a specific API specification
+      parameters:
+        - name: serviceName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the service
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Version of the API
+      responses:
+        '200':
+          description: Successfully retrieved specification
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Specification not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /specs/{serviceName}/latest:
+    get:
+      summary: Get Latest API Specification
+      description: Retrieves the latest version of an API specification
+      parameters:
+        - name: serviceName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the service
+      responses:
+        '200':
+          description: Successfully retrieved latest specification
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Specification not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /health:
+    get:
+      summary: Health Check
+      description: Returns the health status of the service
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+components:
+  schemas:
+    SpecRegistrationRequest:
+      type: object
+      required:
+        - serviceName
+        - version
+        - specification
+      properties:
+        serviceName:
+          type: string
+          description: Name of the service
+        version:
+          type: string
+          description: Semantic version of the API
+        specification:
+          type: object
+          description: OpenAPI specification object
+        description:
+          type: string
+          description: Optional description of the API
+        deprecated:
+          type: boolean
+          description: Optional flag to mark as deprecated
+          default: false
+    SpecRegistrationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique ID for the specification
+        serviceName:
+          type: string
+          description: Name of the service
+        version:
+          type: string
+          description: Version of the API
+        url:
+          type: string
+          description: URL to access the specification
+        docsUrl:
+          type: string
+          description: URL to access the Swagger UI docs
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
