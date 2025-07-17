@@ -4,6 +4,31 @@
 
 The API Registry Service is a centralized repository for API specifications across all microservices in the PDS 2.0 ecosystem. It enables services to publish their OpenAPI specifications and allows other services to discover and consume these specifications, facilitating service discovery and API contract enforcement.
 
+## Microservice Architecture Requirements
+
+As part of the PDS 2.0 ecosystem, the API Registry follows these architectural principles:
+
+1. **Loose Coupling**: 
+   - Operates as an independent microservice with clear boundaries
+   - Communicates with other services only through well-defined APIs
+   - Does not share databases or internal data structures with other services
+
+2. **Complete Implementation**:
+   - All endpoints must be fully implemented with no placeholders
+   - Error handling must follow the PDS error handling standards
+   - All required functionality must be present before deployment
+
+3. **API Publication**:
+   - Must publish its own OpenAPI specification on startup
+   - Must keep its API documentation current and accurate
+   - Should version its API appropriately using semantic versioning
+
+4. **GOV.UK Design System Compliance**:
+   - All user interfaces must comply with the GOV.UK Design System
+   - Must meet WCAG 2.1 AA accessibility standards
+   - Must follow GOV.UK content design guidelines
+   - Error messages must follow GOV.UK standards
+
 ## Service Responsibilities
 
 1. **API Specification Management**
@@ -26,6 +51,66 @@ The API Registry Service is a centralized repository for API specifications acro
    - Generate client SDKs for consuming registered APIs
    - Support multiple programming languages
    - Manage SDK versioning aligned with API versions
+
+## Development Approach
+
+### API-First Design
+
+- All endpoints must be designed and documented using OpenAPI 3.0 before implementation
+- API specifications must be stored in the `/specifications` directory
+- Changes to the API must be documented and versioned appropriately
+- API design must follow RESTful principles and standard HTTP methods
+- Must serve as the reference implementation for API-first design in the ecosystem
+
+### Test-Driven Development
+
+- All functionality must have corresponding unit and integration tests
+- Test coverage should meet or exceed 90% for all service discovery operations
+- Mock services should be used to test integration points
+- End-to-end tests should verify the complete API registration and discovery flow
+- Performance testing should verify high availability and low latency
+
+### Cross-Service Integration
+
+- All other services must integrate with the API Registry
+- Must be the first service to start in the ecosystem
+- Must provide robust health checks to verify service availability
+- Must implement graceful degradation if database is temporarily unavailable
+- Should provide fallback mechanisms for services to operate if registry is unavailable
+
+## Integration Points
+
+Since the API Registry is a foundational service, it doesn't typically depend on other services but is depended upon by all other services:
+
+### Services Depending on API Registry
+
+| Service | Dependency Type | Purpose |
+|---------|----------------|---------|
+| Auth Service | Consumer | Publishes and discovers API specifications |
+| Solid PDS | Consumer | Publishes and discovers API specifications |
+| DRO | Consumer | Publishes and discovers API specifications |
+| FEP | Consumer | Publishes and discovers API specifications |
+| Northern Electric | Consumer | Publishes and discovers API specifications |
+
+## Monitoring and Observability
+
+- Must implement health check endpoint (`/health`)
+- Must expose metrics endpoint (`/metrics`) for Prometheus
+- Must implement structured logging
+- Should include trace IDs in logs for distributed tracing
+- Should implement performance monitoring for all registry operations
+- Must track metrics on API registration, discovery operations, and service availability
+- Should implement alerting for registry availability issues
+
+## Deployment and Scalability
+
+- Service must be containerized using Docker
+- Must support horizontal scaling
+- Should implement caching for improved performance
+- Configuration should be environment-based
+- Should support zero-downtime deployments
+- Must be deployed before other services in the ecosystem
+- Should implement database replication for high availability
 
 ## API Endpoints
 

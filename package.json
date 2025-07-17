@@ -7,7 +7,8 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "test": "jest",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "update:libs": "git submodule update --remote --merge"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -20,7 +21,8 @@
     "yaml": "^2.2.2",
     "winston": "^3.8.2",
     "semver": "^7.5.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "pds-common": "file:lib/pds-common"
   },
   "devDependencies": {
     "eslint": "^8.40.0",
