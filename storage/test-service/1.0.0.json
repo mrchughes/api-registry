@@ -1,0 +1,18 @@
+{
+  "id": "564b61fb-8d2b-4fdc-9e60-031029dc3a8d",
+  "serviceName": "test-service",
+  "version": "1.0.0",
+  "specification": {
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Test API",
+      "version": "1.0.0"
+    },
+    "paths": {}
+  },
+  "deprecated": false,
+  "createdAt": "2025-07-18T08:40:35.048Z",
+  "updatedAt": "2025-07-18T08:40:35.048Z",
+  "url": "/specs/test-service/1.0.0",
+  "docsUrl": "/ui/test-service/1.0.0"
+}

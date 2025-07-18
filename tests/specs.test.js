@@ -7,9 +7,16 @@ app.use(express.json());
 app.use('/specs', specsRouter);
 
 describe('API Registry Service', () => {
+  beforeEach(() => {
+    // Set up test environment
+    process.env.API_KEYS = 'test-key-1,test-key-2';
+    process.env.NODE_ENV = 'test';
+  });
+
   it('should register a new API spec', async () => {
     const res = await request(app)
       .post('/specs')
+      .set('X-API-Key', 'test-key-1')
       .send({
         serviceName: 'test-service',
         version: '1.0.0',
@@ -25,6 +32,7 @@ describe('API Registry Service', () => {
   it('should get a registered API spec', async () => {
     await request(app)
       .post('/specs')
+      .set('X-API-Key', 'test-key-1')
       .send({
         serviceName: 'test-service',
         version: '1.0.1',

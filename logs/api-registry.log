@@ -1,0 +1,13 @@
+{"didAuth":false,"gitEnabled":false,"level":"info","message":"API Registry Service running on port 3005","port":"3005","timestamp":"2025-07-18T08:30:34.012Z"}
+{"ip":"::1","level":"info","message":"GET /auth/status","timestamp":"2025-07-18T08:30:45.325Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"GET /auth/did","timestamp":"2025-07-18T08:30:50.846Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"GET /.well-known/did.json","timestamp":"2025-07-18T08:32:46.706Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"GET /auth/user","timestamp":"2025-07-18T08:34:49.696Z","userAgent":"curl/8.7.1"}
+{"didAuth":true,"gitEnabled":false,"level":"info","message":"API Registry Service running on port 3005","port":"3005","timestamp":"2025-07-18T08:38:03.265Z"}
+{"ip":"::1","level":"info","message":"GET /auth/user","timestamp":"2025-07-18T08:40:07.625Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"POST /auth/challenge","timestamp":"2025-07-18T08:40:14.981Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"POST /auth/challenge/verify","timestamp":"2025-07-18T08:40:21.356Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"GET /auth/user","timestamp":"2025-07-18T08:40:28.997Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"POST /specs","timestamp":"2025-07-18T08:40:34.991Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"GET /specs/test-service/1.0.0","timestamp":"2025-07-18T08:40:40.153Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"GET /health","timestamp":"2025-07-18T08:40:45.094Z","userAgent":"curl/8.7.1"}

@@ -1,0 +1,29 @@
+{"keyPrefix":"test-key...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:26:12.029Z","valid":false}
+{"keyPrefix":"wrong-ke...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:26:12.041Z","valid":false}
+{"keyPrefix":"test-key...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:26:12.091Z","valid":false}
+{"keyPrefix":"test-key...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:26:12.117Z","valid":false}
+{"keyPrefix":"invalid-...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:26:12.092Z","valid":false}
+{"keyPrefix":"test-key...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:26:12.093Z","valid":false}
+{"keyPrefix":"test-key...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:26:12.094Z","valid":false}
+{"keyPrefix":"invalid-...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:26:12.122Z","valid":false}
+{"keyPrefix":"test-key...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:27:47.566Z","valid":false}
+{"keyPrefix":"wrong-ke...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:27:47.575Z","valid":false}
+{"challengeId":"challenge-123","clientDID":"did:web:example","level":"info","message":"DID challenge created","timestamp":"2025-07-18T08:27:47.610Z"}
+{"challengeId":"challenge-123","did":"did:web:example","level":"info","message":"DID challenge verification","timestamp":"2025-07-18T08:27:47.622Z","valid":true}
+{"level":"info","message":"Access token issued","scope":"api:read","timestamp":"2025-07-18T08:27:47.622Z","user":"did:web:example"}
+{"did":"did:web:example","level":"info","message":"DID authentication successful","subject":"example-user","timestamp":"2025-07-18T08:27:47.630Z"}
+{"level":"info","message":"Access token revoked","timestamp":"2025-07-18T08:27:47.631Z","tokenPrefix":"mock-jwt-token..."}
+{"did":"did:web:example","level":"info","message":"DID authentication successful","subject":"example-user","timestamp":"2025-07-18T08:27:47.636Z"}
+{"clientDID":"did:web:example","error":"Service unavailable","level":"error","message":"Failed to create DID challenge","timestamp":"2025-07-18T08:27:47.641Z"}
+{"error":"Invalid token","level":"error","message":"DID authentication failed","timestamp":"2025-07-18T08:27:47.655Z","token":"invalid-token..."}
+{"keyPrefix":"test-key...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:27:47.664Z","valid":false}
+{"keyPrefix":"invalid-...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:27:47.671Z","valid":false}
+{"keyPrefix":"test-key...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:27:47.684Z","valid":false}
+{"keyPrefix":"test-key...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:27:47.705Z","valid":false}
+{"keyPrefix":"test-api...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:34:49.697Z","valid":false}
+{"keyPrefix":"test-key...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:40:07.626Z","valid":true}
+{"challengeId":"challenge-1752828014983","clientDID":"did:web:example.com","level":"info","message":"DID challenge created","timestamp":"2025-07-18T08:40:14.983Z"}
+{"challengeId":"challenge-1752828014983","did":"did:web:example","level":"info","message":"DID challenge verification","timestamp":"2025-07-18T08:40:21.356Z","valid":true}
+{"level":"info","message":"Access token issued","scope":"api:read","timestamp":"2025-07-18T08:40:21.357Z","user":"did:web:example"}
+{"did":"api-registry","level":"info","message":"DID authentication successful","subject":"example-user","timestamp":"2025-07-18T08:40:28.998Z"}
+{"keyPrefix":"test-key...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:40:34.991Z","valid":true}
