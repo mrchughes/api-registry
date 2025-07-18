@@ -76,13 +76,13 @@ app.use('/auth', authRouter);
 
 describe('Authentication Service', () => {
   let authService;
-  
+
   beforeEach(() => {
     jest.clearAllMocks();
     process.env.API_KEYS = 'test-key-1,test-key-2';
     process.env.ENABLE_DID_AUTH = 'true';
     process.env.NODE_ENV = 'test';
-    
+
     // Clear module cache to pick up new environment variables
     jest.resetModules();
     authService = require('../src/services/authService');
@@ -250,16 +250,16 @@ describe('Authentication Service', () => {
 describe('Authentication Middleware', () => {
   let authService;
   let apiKeyAuth, didAuth, flexibleAuth, optionalAuth;
-  
+
   beforeEach(() => {
     // Set up test environment
     process.env.API_KEYS = 'test-key-1,test-key-2';
     process.env.ENABLE_DID_AUTH = 'true';
     process.env.NODE_ENV = 'test';
-    
+
     // Clear module cache to pick up new environment variables
     jest.resetModules();
-    
+
     // Re-import modules with new environment
     authService = require('../src/services/authService');
     const authMiddleware = require('../src/utils/auth');
@@ -288,9 +288,9 @@ describe('Authentication Middleware', () => {
   describe('API Key Middleware', () => {
     it('should authenticate valid API key', () => {
       req.headers['x-api-key'] = 'test-key-1';
-      
+
       apiKeyAuth(req, res, next);
-      
+
       expect(next).toHaveBeenCalled();
       expect(req.auth.authenticated).toBe(true);
       expect(req.auth.type).toBe('api-key');
@@ -298,16 +298,16 @@ describe('Authentication Middleware', () => {
 
     it('should reject invalid API key', () => {
       req.headers['x-api-key'] = 'invalid-key';
-      
+
       apiKeyAuth(req, res, next);
-      
+
       expect(res.status).toHaveBeenCalledWith(401);
       expect(next).not.toHaveBeenCalled();
     });
 
     it('should reject missing API key', () => {
       apiKeyAuth(req, res, next);
-      
+
       expect(res.status).toHaveBeenCalledWith(401);
       expect(next).not.toHaveBeenCalled();
     });
@@ -316,16 +316,16 @@ describe('Authentication Middleware', () => {
   describe('Flexible Authentication Middleware', () => {
     it('should use API key when available', () => {
       req.headers['x-api-key'] = 'test-key-1';
-      
+
       flexibleAuth(req, res, next);
-      
+
       expect(next).toHaveBeenCalled();
       expect(req.auth.type).toBe('api-key');
     });
 
     it('should reject when no authentication provided', () => {
       flexibleAuth(req, res, next);
-      
+
       expect(res.status).toHaveBeenCalledWith(401);
       expect(next).not.toHaveBeenCalled();
     });
@@ -334,16 +334,16 @@ describe('Authentication Middleware', () => {
   describe('Optional Authentication Middleware', () => {
     it('should proceed without authentication', () => {
       optionalAuth(req, res, next);
-      
+
       expect(next).toHaveBeenCalled();
       expect(req.auth.authenticated).toBe(false);
     });
 
     it('should authenticate when valid API key provided', () => {
       req.headers['x-api-key'] = 'test-key-1';
-      
+
       optionalAuth(req, res, next);
-      
+
       expect(next).toHaveBeenCalled();
       expect(req.auth.authenticated).toBe(true);
       expect(req.auth.type).toBe('api-key');

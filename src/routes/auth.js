@@ -54,7 +54,7 @@ router.post('/challenge', [
   try {
     const { did } = req.body;
     const challenge = await authService.createDIDChallenge(did);
-    
+
     res.status(201).json({
       challenge: challenge,
       expiresIn: process.env.CHALLENGE_EXPIRES_IN || '5m'
@@ -118,10 +118,10 @@ router.post('/challenge/verify', [
 
   try {
     const { challengeId, response, scope } = req.body;
-    
+
     // Verify the challenge response
     const verificationResult = await authService.verifyDIDChallengeResponse(challengeId, response);
-    
+
     if (!verificationResult.valid) {
       return res.status(401).json(
         errors.format('auth/challenge-verification-failed', verificationResult.error)
@@ -167,9 +167,9 @@ router.post('/challenge/verify', [
 router.post('/token/revoke', didAuth, async (req, res) => {
   try {
     const token = req.headers.authorization.substring(7); // Remove 'Bearer ' prefix
-    
+
     await authService.revokeAccessToken(token);
-    
+
     res.json({
       message: 'Token revoked successfully'
     });
@@ -224,14 +224,14 @@ router.get('/user', optionalAuth, (req, res) => {
 router.get('/did', async (req, res) => {
   try {
     const { did } = require('../lib/shared-libraries');
-    
+
     // Generate or retrieve the service DID document
     const didDocument = did.document.generate({
       id: process.env.SERVICE_DID || 'did:web:api-registry',
       service: 'api-registry',
       baseUrl: process.env.BASE_URL || 'http://localhost:3005'
     });
-    
+
     res.json(didDocument);
   } catch (error) {
     console.error('DID document generation error:', error);

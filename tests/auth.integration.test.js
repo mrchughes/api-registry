@@ -230,7 +230,7 @@ describe('Identity Provider Service Integration', () => {
 describe('Identity Provider Service Performance', () => {
   it('should handle multiple concurrent requests', async () => {
     const requests = [];
-    
+
     for (let i = 0; i < 10; i++) {
       requests.push(
         request(app)
@@ -240,7 +240,7 @@ describe('Identity Provider Service Performance', () => {
     }
 
     const responses = await Promise.all(requests);
-    
+
     responses.forEach(response => {
       expect(response.body.service).toBe('OIDC-Identity-Service');
     });
@@ -248,11 +248,11 @@ describe('Identity Provider Service Performance', () => {
 
   it('should respond to status check quickly', async () => {
     const start = Date.now();
-    
+
     await request(app)
       .get('/auth/status')
       .expect(200);
-    
+
     const duration = Date.now() - start;
     expect(duration).toBeLessThan(100); // Should respond within 100ms
   });
