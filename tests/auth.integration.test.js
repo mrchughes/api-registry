@@ -45,7 +45,7 @@ describe('Auth Service Integration', () => {
         .get('/auth/status')
         .expect(200);
 
-      expect(response.body.service).toBe('auth-service');
+      expect(response.body.service).toBe('OIDC-Identity-Service');
       expect(response.body.status).toBe('active');
       expect(response.body.features).toBeDefined();
       expect(response.body.features.apiKeyAuth).toBe(true);
@@ -242,7 +242,7 @@ describe('Auth Service Performance', () => {
     const responses = await Promise.all(requests);
     
     responses.forEach(response => {
-      expect(response.body.service).toBe('auth-service');
+      expect(response.body.service).toBe('OIDC-Identity-Service');
     });
   });
 

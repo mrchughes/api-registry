@@ -464,7 +464,7 @@ components:
       properties:
         service:
           type: string
-          example: auth-service
+          example: OIDC-Identity-Service
         version:
           type: string
           example: 1.0.0
