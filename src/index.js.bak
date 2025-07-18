@@ -56,7 +56,7 @@ const logger = winston.createLogger({
 
 // Request logging middleware
 app.use((req, res, next) => {
-  logger.info(`${req.method} ${req.url}`, {
+  logger.info(`${req.method} ${req.url}`, { 
     ip: req.ip,
     userAgent: req.get('User-Agent')
   });
@@ -94,13 +94,13 @@ if (fs.existsSync(openApiPath)) {
 app.get('/.well-known/did.json', async (req, res) => {
   try {
     const { did } = require('./lib/shared-libraries');
-
+    
     const didDocument = did.document.generate({
       id: process.env.SERVICE_DID || 'did:web:api-registry',
       service: 'api-registry',
       baseUrl: process.env.BASE_URL || `http://localhost:${PORT}`
     });
-
+    
     res.json(didDocument);
   } catch (error) {
     logger.error('DID document generation error:', error);
@@ -112,7 +112,7 @@ app.get('/.well-known/did.json', async (req, res) => {
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({
+  res.json({ 
     status: 'ok',
     service: 'api-registry',
     version: '1.0.0',
@@ -148,11 +148,18 @@ app.listen(PORT, async () => {
       await initGitRepo();
       logger.info('Git repository initialized successfully');
     }
-
+    
     logger.info(`API Registry service running on port ${PORT}`);
     logger.info(`API documentation available at http://localhost:${PORT}/api-docs`);
     logger.info(`API browser UI available at http://localhost:${PORT}/ui`);
   } catch (error) {
     logger.error('Error during server startup:', error);
   }
+});
+  
+  logger.info(`API Registry Service running on port ${PORT}`, {
+    port: PORT,
+    didAuth: process.env.ENABLE_DID_AUTH === 'true',
+    gitEnabled: process.env.GIT_ENABLED === 'true'
+  });
 });

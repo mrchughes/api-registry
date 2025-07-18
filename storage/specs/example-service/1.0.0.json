@@ -1,0 +1,70 @@
+{
+  "id": "b2081008-daf4-49da-96a9-009a9a2d7a9b",
+  "serviceName": "example-service",
+  "version": "1.0.0",
+  "specification": {
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Example API",
+      "version": "1.0.0",
+      "description": "An example API for testing"
+    },
+    "paths": {
+      "/users": {
+        "get": {
+          "summary": "Get all users",
+          "responses": {
+            "200": {
+              "description": "List of users",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "User": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "description": "Example API specification for testing",
+  "deprecated": true,
+  "createdAt": "2025-07-18T14:42:07.647Z",
+  "updatedAt": "2025-07-18T14:42:28.599Z",
+  "url": "/specs/example-service/1.0.0",
+  "docsUrl": "/ui/example-service/1.0.0"
+}

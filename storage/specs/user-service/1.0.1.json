@@ -1,0 +1,70 @@
+{
+  "id": "5b192f64-c417-4226-b4dc-5a6f2d96d651",
+  "serviceName": "user-service",
+  "version": "1.0.1",
+  "specification": {
+    "openapi": "3.0.0",
+    "info": {
+      "title": "User Service API",
+      "version": "1.0.1",
+      "description": "Updated API for managing user accounts"
+    },
+    "paths": {
+      "/users": {
+        "get": {
+          "summary": "Get all users",
+          "responses": {
+            "200": {
+              "description": "List of users",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "User": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "description": "Updated API specification for the user service",
+  "deprecated": false,
+  "createdAt": "2025-07-18T14:47:27.103Z",
+  "updatedAt": "2025-07-18T14:47:27.103Z",
+  "url": "/specs/user-service/1.0.1",
+  "docsUrl": "/ui/user-service/1.0.1"
+}

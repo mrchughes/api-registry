@@ -1,0 +1,12 @@
+{
+  "id": "b9d65813-a136-4b08-b776-fd9c17921bb0",
+  "name": "example-service",
+  "description": "Example microservice for testing",
+  "baseUrl": "http://example-service:3000",
+  "healthCheckUrl": "http://example-service:3000/health",
+  "status": "maintenance",
+  "owner": "Test Team",
+  "documentation": "https://example.com/docs",
+  "createdAt": "2025-07-18T14:41:58.444Z",
+  "updatedAt": "2025-07-18T14:44:41.953Z"
+}

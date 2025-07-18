@@ -1,0 +1,12 @@
+{
+  "id": "64c794d2-ca92-4fb3-84f2-4f4eca994840",
+  "name": "user-service",
+  "description": "Updated service for user management",
+  "baseUrl": "http://user-service.example.com",
+  "healthCheckUrl": "http://user-service.example.com/health",
+  "status": "active",
+  "owner": "User Team",
+  "documentation": "https://example.com/user-docs",
+  "createdAt": "2025-07-18T14:45:25.625Z",
+  "updatedAt": "2025-07-18T14:59:28.140Z"
+}

@@ -10,6 +10,34 @@ servers:
     description: Docker container
 paths:
   /specs:
+    get:
+      summary: List API Specifications
+      description: Lists all registered API specifications
+      parameters:
+        - name: serviceName
+          in: query
+          schema:
+            type: string
+          description: Filter by service name
+        - name: version
+          in: query
+          schema:
+            type: string
+          description: Filter by version
+        - name: deprecated
+          in: query
+          schema:
+            type: boolean
+          description: Filter by deprecated status
+      responses:
+        '200':
+          description: Successfully retrieved specifications list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SpecInfo'
     post:
       summary: Register API Specification
       description: Registers a new API specification or updates an existing one
@@ -63,7 +91,78 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Spec'
+        '404':
+          description: Specification not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete API Specification
+      description: Deletes a specific API specification
+      security:
+        - apiKey: []
+      parameters:
+        - name: serviceName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the service
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Version of the API
+      responses:
+        '204':
+          description: Specification deleted successfully
+        '401':
+          description: Unauthorized - Invalid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specification not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /specs/{serviceName}/{version}/deprecate:
+    patch:
+      summary: Mark API as Deprecated
+      description: Marks an API specification as deprecated
+      security:
+        - apiKey: []
+      parameters:
+        - name: serviceName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the service
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Version of the API
+      responses:
+        '200':
+          description: Specification marked as deprecated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpecDeprecationResponse'
+        '401':
+          description: Unauthorized - Invalid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '404':
           description: Specification not found
           content:
@@ -87,9 +186,163 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Spec'
         '404':
           description: Specification not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /specs/validate:
+    post:
+      summary: Validate API Specification
+      description: Validates an OpenAPI specification against standards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: OpenAPI specification object
+      responses:
+        '200':
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResult'
+  /services:
+    get:
+      summary: List Services
+      description: Lists all registered services
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, maintenance, deprecated]
+          description: Filter by service status
+        - name: owner
+          in: query
+          schema:
+            type: string
+          description: Filter by service owner
+      responses:
+        '200':
+          description: Successfully retrieved services list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServiceSummary'
+    post:
+      summary: Register Service
+      description: Registers a new service in the registry
+      security:
+        - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceRegistrationRequest'
+      responses:
+        '201':
+          description: Service registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Service already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /services/{serviceName}:
+    get:
+      summary: Get Service Details
+      description: Gets details about a registered service
+      parameters:
+        - name: serviceName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the service
+      responses:
+        '200':
+          description: Successfully retrieved service details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceDetails'
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /services/{serviceName}/status:
+    patch:
+      summary: Update Service Status
+      description: Updates the status of a service
+      security:
+        - apiKey: []
+      parameters:
+        - name: serviceName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the service
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum: [active, maintenance, deprecated]
+                  description: New status for the service
+      responses:
+        '200':
+          description: Service status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+        '400':
+          description: Invalid status value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Service not found
           content:
             application/json:
               schema:
@@ -100,7 +353,7 @@ paths:
       description: Returns the health status of the service
       responses:
         '200':
-          description: Service is healthy
+          description: Service health information
           content:
             application/json:
               schema:
@@ -127,165 +380,12 @@ paths:
                         type: boolean
                       gitStorage:
                         type: boolean
-  /auth/challenge:
-    post:
-      summary: Create DID Authentication Challenge
-      description: Creates a challenge for DID-based authentication
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChallengeRequest'
-      responses:
-        '201':
-          description: Challenge created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChallengeResponse'
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /auth/challenge/verify:
-    post:
-      summary: Verify DID Challenge Response
-      description: Verifies a signed challenge response and issues an access token
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChallengeVerificationRequest'
-      responses:
-        '200':
-          description: Challenge verified successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TokenResponse'
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Challenge verification failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /auth/token/revoke:
-    post:
-      summary: Revoke Access Token
-      description: Revokes an access token
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Token revoked successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Token revoked successfully
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /auth/user:
-    get:
-      summary: Get Current User Information
-      description: Returns information about the currently authenticated user
-      security:
-        - bearerAuth: []
-        - apiKey: []
-      responses:
-        '200':
-          description: User information retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserInfo'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /auth/did:
-    get:
-      summary: Get Service DID Document
-      description: Returns the DID document for this service
-      responses:
-        '200':
-          description: DID document retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DIDDocument'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /auth/status:
-    get:
-      summary: Get Authentication Service Status
-      description: Returns the status of the authentication service
-      responses:
-        '200':
-          description: Service status retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthServiceStatus'
-  /.well-known/did.json:
-    get:
-      summary: Get Service DID Document (Well-Known)
-      description: Returns the DID document for this service at the well-known location
-      responses:
-        '200':
-          description: DID document retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DIDDocument'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
 components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: x-api-key
   schemas:
     SpecRegistrationRequest:
       type: object
@@ -318,181 +418,223 @@ components:
           description: Unique ID for the specification
         serviceName:
           type: string
-          description: Name of the service
         version:
           type: string
-          description: Version of the API
+        description:
+          type: string
         url:
           type: string
           description: URL to access the specification
         docsUrl:
           type: string
           description: URL to access the Swagger UI docs
+        deprecated:
+          type: boolean
         createdAt:
           type: string
           format: date-time
-          description: Creation timestamp
         updatedAt:
           type: string
           format: date-time
-          description: Last update timestamp
-    ChallengeRequest:
-      type: object
-      required:
-        - did
-      properties:
-        did:
-          type: string
-          description: The client's DID
-          example: did:web:example.com
-    ChallengeResponse:
+    SpecInfo:
       type: object
       properties:
-        challenge:
-          type: object
-          properties:
-            id:
-              type: string
-              description: Unique challenge ID
-            challenge:
-              type: string
-              description: Challenge nonce
-            clientDID:
-              type: string
-              description: Client's DID
-            createdAt:
-              type: string
-              format: date-time
-            expiresAt:
-              type: string
-              format: date-time
-        expiresIn:
+        id:
           type: string
-          description: Challenge expiration time
-          example: 5m
-    ChallengeVerificationRequest:
-      type: object
-      required:
-        - challengeId
-        - response
-      properties:
-        challengeId:
+        serviceName:
           type: string
-          description: The challenge ID
-        response:
+        version:
           type: string
-          description: The signed challenge response
-        scope:
+        description:
           type: string
-          description: Requested access scope
-          example: api:read
-    TokenResponse:
-      type: object
-      properties:
-        accessToken:
+        url:
           type: string
-          description: JWT access token
-        tokenType:
+        docsUrl:
           type: string
-          description: Token type
-          example: Bearer
-        expiresIn:
-          type: string
-          description: Token expiration time
-          example: 24h
-        user:
-          type: object
-          description: User information
-          properties:
-            did:
-              type: string
-            subject:
-              type: string
-            claims:
-              type: object
-    UserInfo:
-      type: object
-      properties:
-        authenticated:
+        deprecated:
           type: boolean
-        authType:
+        createdAt:
           type: string
-          enum: [api-key, did]
-        user:
-          type: object
-          properties:
-            did:
-              type: string
-            subject:
-              type: string
-            claims:
-              type: object
-    DIDDocument:
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Spec:
       type: object
       properties:
-        "@context":
+        id:
+          type: string
+        serviceName:
+          type: string
+        version:
+          type: string
+        specification:
+          type: object
+          description: OpenAPI specification object
+        description:
+          type: string
+        url:
+          type: string
+        docsUrl:
+          type: string
+        deprecated:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    SpecDeprecationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        serviceName:
+          type: string
+        version:
+          type: string
+        deprecated:
+          type: boolean
+        updatedAt:
+          type: string
+          format: date-time
+    ValidationResult:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        errors:
           type: array
           items:
             type: string
+    ServiceRegistrationRequest:
+      type: object
+      required:
+        - name
+        - baseUrl
+      properties:
+        name:
+          type: string
+          description: Name of the service
+        description:
+          type: string
+          description: Description of the service
+        baseUrl:
+          type: string
+          description: Base URL for the service
+        healthCheckUrl:
+          type: string
+          description: Health check URL for the service
+        status:
+          type: string
+          enum: [active, maintenance, deprecated]
+          default: active
+          description: Status of the service
+        owner:
+          type: string
+          description: Owner of the service
+        documentation:
+          type: string
+          description: URL to service documentation
+    Service:
+      type: object
+      properties:
         id:
           type: string
-          description: DID identifier
-        service:
+          description: Unique ID for the service
+        name:
+          type: string
+          description: Name of the service
+        description:
+          type: string
+          description: Description of the service
+        baseUrl:
+          type: string
+          description: Base URL for the service
+        healthCheckUrl:
+          type: string
+          description: Health check URL for the service
+        status:
+          type: string
+          enum: [active, maintenance, deprecated]
+          description: Status of the service
+        owner:
+          type: string
+          description: Owner of the service
+        documentation:
+          type: string
+          description: URL to service documentation
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ServiceSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        baseUrl:
+          type: string
+        status:
+          type: string
+          enum: [active, maintenance, deprecated]
+        latestSpec:
+          type: object
+          properties:
+            version:
+              type: string
+            url:
+              type: string
+            docsUrl:
+              type: string
+    ServiceDetails:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        baseUrl:
+          type: string
+        healthCheckUrl:
+          type: string
+        status:
+          type: string
+          enum: [active, maintenance, deprecated]
+        owner:
+          type: string
+        documentation:
+          type: string
+        specs:
           type: array
           items:
             type: object
             properties:
               id:
                 type: string
-              type:
+              version:
                 type: string
-              serviceEndpoint:
+              url:
                 type: string
-        verificationMethod:
-          type: array
-          items:
-            type: object
-        authentication:
-          type: array
-          items:
-            type: string
-        created:
+              docsUrl:
+                type: string
+              deprecated:
+                type: boolean
+        createdAt:
           type: string
           format: date-time
-    AuthServiceStatus:
-      type: object
-      properties:
-        service:
+        updatedAt:
           type: string
-          example: OIDC-Identity-Service
-        version:
-          type: string
-          example: 1.0.0
-        status:
-          type: string
-          example: active
-        features:
-          type: object
-          properties:
-            apiKeyAuth:
-              type: boolean
-            didAuth:
-              type: boolean
-            challengeResponse:
-              type: boolean
-        endpoints:
-          type: object
-          properties:
-            challenge:
-              type: string
-            verify:
-              type: string
-            revoke:
-              type: string
-            user:
-              type: string
-            did:
-              type: string
+          format: date-time
     Error:
       type: object
       properties:
@@ -501,19 +643,7 @@ components:
           properties:
             code:
               type: string
-              description: Error code
             message:
               type: string
-              description: Error message
             details:
               type: object
-              description: Additional error details
-  securitySchemes:
-    apiKey:
-      type: apiKey
-      in: header
-      name: X-API-Key
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT

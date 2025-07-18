@@ -1,0 +1,519 @@
+openapi: 3.0.0
+info:
+  title: API Registry Service
+  description: A centralized registry for API specifications across the Solid Microservices ecosystem
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:3005'
+    description: Local development server
+  - url: 'http://api-registry:3005'
+    description: Docker container
+paths:
+  /specs:
+    post:
+      summary: Register API Specification
+      description: Registers a new API specification or updates an existing one
+      security:
+        - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpecRegistrationRequest'
+      responses:
+        '201':
+          description: Specification registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpecRegistrationResponse'
+        '400':
+          description: Invalid request body or specification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /specs/{serviceName}/{version}:
+    get:
+      summary: Get API Specification
+      description: Retrieves a specific API specification
+      parameters:
+        - name: serviceName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the service
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Version of the API
+      responses:
+        '200':
+          description: Successfully retrieved specification
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Specification not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /specs/{serviceName}/latest:
+    get:
+      summary: Get Latest API Specification
+      description: Retrieves the latest version of an API specification
+      parameters:
+        - name: serviceName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the service
+      responses:
+        '200':
+          description: Successfully retrieved latest specification
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Specification not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /health:
+    get:
+      summary: Health Check
+      description: Returns the health status of the service
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  service:
+                    type: string
+                    example: api-registry
+                  version:
+                    type: string
+                    example: 1.0.0
+                  timestamp:
+                    type: string
+                    format: date-time
+                  features:
+                    type: object
+                    properties:
+                      apiKeyAuth:
+                        type: boolean
+                      didAuth:
+                        type: boolean
+                      gitStorage:
+                        type: boolean
+  /auth/challenge:
+    post:
+      summary: Create DID Authentication Challenge
+      description: Creates a challenge for DID-based authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChallengeRequest'
+      responses:
+        '201':
+          description: Challenge created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChallengeResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/challenge/verify:
+    post:
+      summary: Verify DID Challenge Response
+      description: Verifies a signed challenge response and issues an access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChallengeVerificationRequest'
+      responses:
+        '200':
+          description: Challenge verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Challenge verification failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/token/revoke:
+    post:
+      summary: Revoke Access Token
+      description: Revokes an access token
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Token revoked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Token revoked successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/user:
+    get:
+      summary: Get Current User Information
+      description: Returns information about the currently authenticated user
+      security:
+        - bearerAuth: []
+        - apiKey: []
+      responses:
+        '200':
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/did:
+    get:
+      summary: Get Service DID Document
+      description: Returns the DID document for this service
+      responses:
+        '200':
+          description: DID document retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DIDDocument'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/status:
+    get:
+      summary: Get Authentication Service Status
+      description: Returns the status of the authentication service
+      responses:
+        '200':
+          description: Service status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthServiceStatus'
+  /.well-known/did.json:
+    get:
+      summary: Get Service DID Document (Well-Known)
+      description: Returns the DID document for this service at the well-known location
+      responses:
+        '200':
+          description: DID document retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DIDDocument'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    SpecRegistrationRequest:
+      type: object
+      required:
+        - serviceName
+        - version
+        - specification
+      properties:
+        serviceName:
+          type: string
+          description: Name of the service
+        version:
+          type: string
+          description: Semantic version of the API
+        specification:
+          type: object
+          description: OpenAPI specification object
+        description:
+          type: string
+          description: Optional description of the API
+        deprecated:
+          type: boolean
+          description: Optional flag to mark as deprecated
+          default: false
+    SpecRegistrationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique ID for the specification
+        serviceName:
+          type: string
+          description: Name of the service
+        version:
+          type: string
+          description: Version of the API
+        url:
+          type: string
+          description: URL to access the specification
+        docsUrl:
+          type: string
+          description: URL to access the Swagger UI docs
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+    ChallengeRequest:
+      type: object
+      required:
+        - did
+      properties:
+        did:
+          type: string
+          description: The client's DID
+          example: did:web:example.com
+    ChallengeResponse:
+      type: object
+      properties:
+        challenge:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Unique challenge ID
+            challenge:
+              type: string
+              description: Challenge nonce
+            clientDID:
+              type: string
+              description: Client's DID
+            createdAt:
+              type: string
+              format: date-time
+            expiresAt:
+              type: string
+              format: date-time
+        expiresIn:
+          type: string
+          description: Challenge expiration time
+          example: 5m
+    ChallengeVerificationRequest:
+      type: object
+      required:
+        - challengeId
+        - response
+      properties:
+        challengeId:
+          type: string
+          description: The challenge ID
+        response:
+          type: string
+          description: The signed challenge response
+        scope:
+          type: string
+          description: Requested access scope
+          example: api:read
+    TokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: JWT access token
+        tokenType:
+          type: string
+          description: Token type
+          example: Bearer
+        expiresIn:
+          type: string
+          description: Token expiration time
+          example: 24h
+        user:
+          type: object
+          description: User information
+          properties:
+            did:
+              type: string
+            subject:
+              type: string
+            claims:
+              type: object
+    UserInfo:
+      type: object
+      properties:
+        authenticated:
+          type: boolean
+        authType:
+          type: string
+          enum: [api-key, did]
+        user:
+          type: object
+          properties:
+            did:
+              type: string
+            subject:
+              type: string
+            claims:
+              type: object
+    DIDDocument:
+      type: object
+      properties:
+        "@context":
+          type: array
+          items:
+            type: string
+        id:
+          type: string
+          description: DID identifier
+        service:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+              serviceEndpoint:
+                type: string
+        verificationMethod:
+          type: array
+          items:
+            type: object
+        authentication:
+          type: array
+          items:
+            type: string
+        created:
+          type: string
+          format: date-time
+    AuthServiceStatus:
+      type: object
+      properties:
+        service:
+          type: string
+          example: OIDC-Identity-Service
+        version:
+          type: string
+          example: 1.0.0
+        status:
+          type: string
+          example: active
+        features:
+          type: object
+          properties:
+            apiKeyAuth:
+              type: boolean
+            didAuth:
+              type: boolean
+            challengeResponse:
+              type: boolean
+        endpoints:
+          type: object
+          properties:
+            challenge:
+              type: string
+            verify:
+              type: string
+            revoke:
+              type: string
+            user:
+              type: string
+            did:
+              type: string
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Error code
+            message:
+              type: string
+              description: Error message
+            details:
+              type: object
+              description: Additional error details
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

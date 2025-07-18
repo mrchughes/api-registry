@@ -27,3 +27,15 @@
 {"level":"info","message":"Access token issued","scope":"api:read","timestamp":"2025-07-18T08:40:21.357Z","user":"did:web:example"}
 {"did":"api-registry","level":"info","message":"DID authentication successful","subject":"example-user","timestamp":"2025-07-18T08:40:28.998Z"}
 {"keyPrefix":"test-key...","level":"info","message":"API key validation","timestamp":"2025-07-18T08:40:34.991Z","valid":true}
+{"keyPrefix":"dev-api-...","level":"info","message":"API key validation","timestamp":"2025-07-18T14:41:58.443Z","valid":true}
+{"keyPrefix":"dev-api-...","level":"info","message":"API key validation","timestamp":"2025-07-18T14:42:07.587Z","valid":true}
+{"keyPrefix":"dev-api-...","level":"info","message":"API key validation","timestamp":"2025-07-18T14:42:28.599Z","valid":true}
+{"keyPrefix":"dev-api-...","level":"info","message":"API key validation","timestamp":"2025-07-18T14:42:46.629Z","valid":true}
+{"keyPrefix":"dev-api-...","level":"info","message":"API key validation","timestamp":"2025-07-18T14:43:58.992Z","valid":true}
+{"keyPrefix":"dev-api-...","level":"info","message":"API key validation","timestamp":"2025-07-18T14:44:04.982Z","valid":true}
+{"keyPrefix":"dev-api-...","level":"info","message":"API key validation","timestamp":"2025-07-18T14:44:41.953Z","valid":true}
+{"keyPrefix":"dev-api-...","level":"info","message":"API key validation","timestamp":"2025-07-18T14:45:25.624Z","valid":true}
+{"keyPrefix":"dev-api-...","level":"info","message":"API key validation","timestamp":"2025-07-18T14:45:39.910Z","valid":true}
+{"keyPrefix":"dev-api-...","level":"info","message":"API key validation","timestamp":"2025-07-18T14:46:40.327Z","valid":true}
+{"keyPrefix":"dev-api-...","level":"info","message":"API key validation","timestamp":"2025-07-18T14:47:27.064Z","valid":true}
+{"keyPrefix":"dev-api-...","level":"info","message":"API key validation","timestamp":"2025-07-18T14:59:28.139Z","valid":true}

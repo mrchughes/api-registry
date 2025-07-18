@@ -11,3 +11,132 @@
 {"ip":"::1","level":"info","message":"POST /specs","timestamp":"2025-07-18T08:40:34.991Z","userAgent":"curl/8.7.1"}
 {"ip":"::1","level":"info","message":"GET /specs/test-service/1.0.0","timestamp":"2025-07-18T08:40:40.153Z","userAgent":"curl/8.7.1"}
 {"ip":"::1","level":"info","message":"GET /health","timestamp":"2025-07-18T08:40:45.094Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Git repository initialized successfully","timestamp":"2025-07-18T14:41:51.555Z"}
+{"level":"info","message":"API Registry service running on port 3005","timestamp":"2025-07-18T14:41:51.556Z"}
+{"level":"info","message":"API documentation available at http://localhost:3005/api-docs","timestamp":"2025-07-18T14:41:51.556Z"}
+{"level":"info","message":"API browser UI available at http://localhost:3005/ui","timestamp":"2025-07-18T14:41:51.556Z"}
+{"ip":"::1","level":"info","message":"POST /services","timestamp":"2025-07-18T14:41:58.443Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Service registered: example-service","serviceName":"example-service","timestamp":"2025-07-18T14:41:58.444Z"}
+{"ip":"::1","level":"info","message":"POST /specs","timestamp":"2025-07-18T14:42:07.587Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Validating specification for example-service@1.0.0","timestamp":"2025-07-18T14:42:07.588Z"}
+{"level":"info","message":"Saving spec for example-service@1.0.0","timestamp":"2025-07-18T14:42:07.647Z"}
+{"error":"NotFoundError: Could not find HEAD.\n    at GitRefManager.resolve (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:2031:11)\n    at async _commit (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:5426:11)\n    at async Object.commit (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:8812:12)\n    at async exports.saveSpec (/Users/chrishughes/Projects/PDS-2.0/api-registry/src/services/specsService.js:69:7)\n    at async exports.registerSpec (/Users/chrishughes/Projects/PDS-2.0/api-registry/src/controllers/specsController.js:43:20)","level":"error","message":"Git operation failed: Could not find HEAD.","timestamp":"2025-07-18T14:42:07.664Z"}
+{"level":"info","message":"Specification registered: example-service@1.0.0","timestamp":"2025-07-18T14:42:07.664Z"}
+{"ip":"::1","level":"info","message":"GET /services","timestamp":"2025-07-18T14:42:12.340Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Latest version for example-service is 1.0.0","timestamp":"2025-07-18T14:42:12.342Z"}
+{"ip":"::1","level":"info","message":"GET /services/example-service","timestamp":"2025-07-18T14:42:18.187Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Listing specs with filters: {\"serviceName\":\"example-service\"}","timestamp":"2025-07-18T14:42:18.188Z"}
+{"ip":"::1","level":"info","message":"GET /specs/example-service/latest","timestamp":"2025-07-18T14:42:23.315Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Looking for latest spec for service: example-service","timestamp":"2025-07-18T14:42:23.315Z"}
+{"level":"info","message":"Latest version for example-service is 1.0.0","timestamp":"2025-07-18T14:42:23.315Z"}
+{"ip":"::1","level":"info","message":"PATCH /specs/example-service/1.0.0/deprecate","timestamp":"2025-07-18T14:42:28.599Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Deprecating specification: example-service@1.0.0","timestamp":"2025-07-18T14:42:28.599Z"}
+{"level":"info","message":"Marking spec as deprecated: example-service@1.0.0","timestamp":"2025-07-18T14:42:28.599Z"}
+{"error":"NotFoundError: Could not find HEAD.\n    at GitRefManager.resolve (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:2031:11)\n    at async _commit (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:5426:11)\n    at async Object.commit (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:8812:12)\n    at async exports.deprecateSpec (/Users/chrishughes/Projects/PDS-2.0/api-registry/src/services/specsService.js:242:7)\n    at async exports.deprecateSpec (/Users/chrishughes/Projects/PDS-2.0/api-registry/src/controllers/specsController.js:169:18)","level":"error","message":"Git operation failed during deprecation: Could not find HEAD.","timestamp":"2025-07-18T14:42:28.603Z"}
+{"ip":"::1","level":"info","message":"GET /specs","timestamp":"2025-07-18T14:42:33.775Z","userAgent":"curl/8.7.1"}
+{"filters":{},"level":"info","message":"Listing specifications","timestamp":"2025-07-18T14:42:33.775Z"}
+{"level":"info","message":"Listing specs with filters: {}","timestamp":"2025-07-18T14:42:33.775Z"}
+{"ip":"::1","level":"info","message":"POST /specs","timestamp":"2025-07-18T14:42:46.629Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Validating specification for example-service@1.1.0","timestamp":"2025-07-18T14:42:46.629Z"}
+{"level":"info","message":"Saving spec for example-service@1.1.0","timestamp":"2025-07-18T14:42:46.674Z"}
+{"error":"NotFoundError: Could not find HEAD.\n    at GitRefManager.resolve (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:2031:11)\n    at async _commit (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:5426:11)\n    at async Object.commit (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:8812:12)\n    at async exports.saveSpec (/Users/chrishughes/Projects/PDS-2.0/api-registry/src/services/specsService.js:69:7)\n    at async exports.registerSpec (/Users/chrishughes/Projects/PDS-2.0/api-registry/src/controllers/specsController.js:43:20)","level":"error","message":"Git operation failed: Could not find HEAD.","timestamp":"2025-07-18T14:42:46.678Z"}
+{"level":"info","message":"Specification registered: example-service@1.1.0","timestamp":"2025-07-18T14:42:46.678Z"}
+{"ip":"::1","level":"info","message":"GET /specs/example-service","timestamp":"2025-07-18T14:43:51.631Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"POST /services","timestamp":"2025-07-18T14:43:58.992Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"POST /services","timestamp":"2025-07-18T14:44:04.982Z","userAgent":"curl/8.7.1"}
+{"error":"Error: Service 'example-service' already exists\n    at exports.saveService (/Users/chrishughes/Projects/PDS-2.0/api-registry/src/services/serviceService.js:24:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async exports.registerService (/Users/chrishughes/Projects/PDS-2.0/api-registry/src/controllers/serviceController.js:32:20)","level":"error","message":"Error registering service: Service 'example-service' already exists","timestamp":"2025-07-18T14:44:04.982Z"}
+{"ip":"::1","level":"info","message":"GET /services","timestamp":"2025-07-18T14:44:10.554Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Latest version for example-service is 1.1.0","timestamp":"2025-07-18T14:44:10.555Z"}
+{"ip":"::1","level":"info","message":"GET /specs?serviceName=example-service","timestamp":"2025-07-18T14:44:14.557Z","userAgent":"curl/8.7.1"}
+{"filters":{"serviceName":"example-service"},"level":"info","message":"Listing specifications","timestamp":"2025-07-18T14:44:14.557Z"}
+{"level":"info","message":"Listing specs with filters: {\"serviceName\":\"example-service\"}","timestamp":"2025-07-18T14:44:14.558Z"}
+{"ip":"::1","level":"info","message":"GET /specs/example-service/latest","timestamp":"2025-07-18T14:44:19.096Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Looking for latest spec for service: example-service","timestamp":"2025-07-18T14:44:19.096Z"}
+{"level":"info","message":"Latest version for example-service is 1.1.0","timestamp":"2025-07-18T14:44:19.096Z"}
+{"ip":"::1","level":"info","message":"GET /specs/example-service/1.0.0","timestamp":"2025-07-18T14:44:23.889Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Getting specification: example-service@1.0.0","timestamp":"2025-07-18T14:44:23.890Z"}
+{"ip":"::1","level":"info","message":"GET /services/example-service","timestamp":"2025-07-18T14:44:27.333Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Listing specs with filters: {\"serviceName\":\"example-service\"}","timestamp":"2025-07-18T14:44:27.333Z"}
+{"ip":"::1","level":"info","message":"GET /ui","timestamp":"2025-07-18T14:44:31.069Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Listing specs with filters: {}","timestamp":"2025-07-18T14:44:31.069Z"}
+{"ip":"::1","level":"info","message":"GET /ui/example-service/1.1.0","timestamp":"2025-07-18T14:44:36.470Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"PATCH /services/example-service/status","timestamp":"2025-07-18T14:44:41.952Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Service status updated: example-service -> maintenance","timestamp":"2025-07-18T14:44:41.953Z"}
+{"ip":"::1","level":"info","message":"GET /services","timestamp":"2025-07-18T14:45:19.141Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Latest version for example-service is 1.1.0","timestamp":"2025-07-18T14:45:19.141Z"}
+{"ip":"::1","level":"info","message":"POST /services","timestamp":"2025-07-18T14:45:25.624Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Service registered: user-service","serviceName":"user-service","timestamp":"2025-07-18T14:45:25.625Z"}
+{"ip":"::1","level":"info","message":"POST /specs","timestamp":"2025-07-18T14:45:39.910Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Validating specification for user-service@1.0.0","timestamp":"2025-07-18T14:45:39.910Z"}
+{"level":"info","message":"Saving spec for user-service@1.0.0","timestamp":"2025-07-18T14:45:39.936Z"}
+{"error":"NotFoundError: Could not find HEAD.\n    at GitRefManager.resolve (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:2031:11)\n    at async _commit (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:5426:11)\n    at async Object.commit (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:8812:12)\n    at async exports.saveSpec (/Users/chrishughes/Projects/PDS-2.0/api-registry/src/services/specsService.js:69:7)\n    at async exports.registerSpec (/Users/chrishughes/Projects/PDS-2.0/api-registry/src/controllers/specsController.js:43:20)","level":"error","message":"Git operation failed: Could not find HEAD.","timestamp":"2025-07-18T14:45:39.943Z"}
+{"level":"info","message":"Specification registered: user-service@1.0.0","timestamp":"2025-07-18T14:45:39.944Z"}
+{"ip":"::1","level":"info","message":"GET /services","timestamp":"2025-07-18T14:45:51.318Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Latest version for example-service is 1.1.0","timestamp":"2025-07-18T14:45:51.319Z"}
+{"level":"info","message":"Latest version for user-service is 1.0.0","timestamp":"2025-07-18T14:45:51.319Z"}
+{"ip":"::1","level":"info","message":"GET /ui","timestamp":"2025-07-18T14:45:56.520Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Listing specs with filters: {}","timestamp":"2025-07-18T14:45:56.521Z"}
+{"ip":"::1","level":"info","message":"GET /specs","timestamp":"2025-07-18T14:46:03.097Z","userAgent":"curl/8.7.1"}
+{"filters":{},"level":"info","message":"Listing specifications","timestamp":"2025-07-18T14:46:03.098Z"}
+{"level":"info","message":"Listing specs with filters: {}","timestamp":"2025-07-18T14:46:03.098Z"}
+{"ip":"::1","level":"info","message":"DELETE /services/user-service","timestamp":"2025-07-18T14:46:07.480Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"GET /api-docs","timestamp":"2025-07-18T14:46:12.225Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"GET /api-docs","timestamp":"2025-07-18T14:46:16.508Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"GET /api-docs/","timestamp":"2025-07-18T14:46:25.429Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"DELETE /specs/user-service/1.0.0","timestamp":"2025-07-18T14:46:40.327Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Deleting specification: user-service@1.0.0","timestamp":"2025-07-18T14:46:40.327Z"}
+{"level":"info","message":"Deleting spec for user-service@1.0.0","timestamp":"2025-07-18T14:46:40.327Z"}
+{"error":"NotFoundError: Could not find HEAD.\n    at GitRefManager.resolve (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:2031:11)\n    at async _commit (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:5426:11)\n    at async Object.commit (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:8812:12)\n    at async exports.deleteSpec (/Users/chrishughes/Projects/PDS-2.0/api-registry/src/services/specsService.js:204:7)\n    at async exports.deleteSpec (/Users/chrishughes/Projects/PDS-2.0/api-registry/src/controllers/specsController.js:145:21)","level":"error","message":"Git operation failed during deletion: Could not find HEAD.","timestamp":"2025-07-18T14:46:40.329Z"}
+{"ip":"::1","level":"info","message":"GET /specs/user-service/1.0.0","timestamp":"2025-07-18T14:46:51.582Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Getting specification: user-service@1.0.0","timestamp":"2025-07-18T14:46:51.582Z"}
+{"level":"warn","message":"Specification not found: user-service@1.0.0","timestamp":"2025-07-18T14:46:51.582Z"}
+{"ip":"::1","level":"info","message":"GET /specs","timestamp":"2025-07-18T14:46:57.990Z","userAgent":"curl/8.7.1"}
+{"filters":{},"level":"info","message":"Listing specifications","timestamp":"2025-07-18T14:46:57.990Z"}
+{"level":"info","message":"Listing specs with filters: {}","timestamp":"2025-07-18T14:46:57.991Z"}
+{"ip":"::1","level":"info","message":"GET /services","timestamp":"2025-07-18T14:47:02.238Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Latest version for example-service is 1.1.0","timestamp":"2025-07-18T14:47:02.239Z"}
+{"level":"warn","message":"No spec files found for service: user-service","timestamp":"2025-07-18T14:47:02.239Z"}
+{"ip":"::1","level":"info","message":"PATCH /services/user-service","timestamp":"2025-07-18T14:47:09.205Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"GET /services","timestamp":"2025-07-18T14:47:17.390Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Latest version for example-service is 1.1.0","timestamp":"2025-07-18T14:47:17.390Z"}
+{"level":"warn","message":"No spec files found for service: user-service","timestamp":"2025-07-18T14:47:17.390Z"}
+{"ip":"::1","level":"info","message":"POST /specs","timestamp":"2025-07-18T14:47:27.064Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Validating specification for user-service@1.0.1","timestamp":"2025-07-18T14:47:27.064Z"}
+{"level":"info","message":"Saving spec for user-service@1.0.1","timestamp":"2025-07-18T14:47:27.102Z"}
+{"error":"NotFoundError: Could not find HEAD.\n    at GitRefManager.resolve (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:2031:11)\n    at async _commit (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:5426:11)\n    at async Object.commit (/Users/chrishughes/Projects/PDS-2.0/api-registry/node_modules/isomorphic-git/index.cjs:8812:12)\n    at async exports.saveSpec (/Users/chrishughes/Projects/PDS-2.0/api-registry/src/services/specsService.js:69:7)\n    at async exports.registerSpec (/Users/chrishughes/Projects/PDS-2.0/api-registry/src/controllers/specsController.js:43:20)","level":"error","message":"Git operation failed: Could not find HEAD.","timestamp":"2025-07-18T14:47:27.106Z"}
+{"level":"info","message":"Specification registered: user-service@1.0.1","timestamp":"2025-07-18T14:47:27.106Z"}
+{"ip":"::1","level":"info","message":"GET /services","timestamp":"2025-07-18T14:47:32.380Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Latest version for example-service is 1.1.0","timestamp":"2025-07-18T14:47:32.381Z"}
+{"level":"info","message":"Latest version for user-service is 1.0.1","timestamp":"2025-07-18T14:47:32.381Z"}
+{"ip":"::1","level":"info","message":"GET /ui","timestamp":"2025-07-18T14:47:37.762Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Listing specs with filters: {}","timestamp":"2025-07-18T14:47:37.762Z"}
+{"ip":"::1","level":"info","message":"PATCH /services/user-service","timestamp":"2025-07-18T14:49:36.790Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"GET /services/user-service","timestamp":"2025-07-18T14:50:16.816Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Listing specs with filters: {\"serviceName\":\"user-service\"}","timestamp":"2025-07-18T14:50:16.816Z"}
+{"ip":"::1","level":"info","message":"PATCH /services/user-service","timestamp":"2025-07-18T14:50:20.609Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"PATCH /services/user-service/","timestamp":"2025-07-18T14:50:31.631Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"PATCH /services/user-service","timestamp":"2025-07-18T14:50:35.943Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"PATCH /services/example-service","timestamp":"2025-07-18T14:50:39.659Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"GET /services","timestamp":"2025-07-18T14:50:43.630Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Latest version for example-service is 1.1.0","timestamp":"2025-07-18T14:50:43.631Z"}
+{"level":"info","message":"Latest version for user-service is 1.0.1","timestamp":"2025-07-18T14:50:43.631Z"}
+{"ip":"::1","level":"info","message":"GET /services/user-service","timestamp":"2025-07-18T14:50:47.997Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Listing specs with filters: {\"serviceName\":\"user-service\"}","timestamp":"2025-07-18T14:50:47.998Z"}
+{"ip":"::1","level":"info","message":"PATCH /services/user-service","timestamp":"2025-07-18T14:51:54.659Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"PATCH /services/user-service","timestamp":"2025-07-18T14:54:24.314Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"PATCH /services/user-service","timestamp":"2025-07-18T14:55:33.935Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"PATCH /services/user-service","timestamp":"2025-07-18T14:56:31.067Z","userAgent":"curl/8.7.1"}
+{"ip":"::1","level":"info","message":"PATCH /services/user-service","timestamp":"2025-07-18T14:57:36.351Z","userAgent":"curl/8.7.1"}
+{"level":"info","message":"Git repository initialized successfully","timestamp":"2025-07-18T14:58:11.080Z"}
+{"level":"info","message":"API Registry service running on port 3005","timestamp":"2025-07-18T14:58:11.088Z"}
+{"level":"info","message":"API documentation available at http://localhost:3005/api-docs","timestamp":"2025-07-18T14:58:11.088Z"}
+{"level":"info","message":"API browser UI available at http://localhost:3005/ui","timestamp":"2025-07-18T14:58:11.088Z"}
+{"level":"info","message":"Git repository initialized successfully","timestamp":"2025-07-18T14:58:49.195Z"}
+{"level":"info","message":"API Registry service running on port 3005","timestamp":"2025-07-18T14:58:49.197Z"}
+{"level":"info","message":"API documentation available at http://localhost:3005/api-docs","timestamp":"2025-07-18T14:58:49.197Z"}
+{"level":"info","message":"API browser UI available at http://localhost:3005/ui","timestamp":"2025-07-18T14:58:49.197Z"}
+{"ip":"::1","level":"info","message":"PATCH /services/user-service","timestamp":"2025-07-18T14:59:28.138Z","userAgent":"curl/8.7.1"}
+{"baseUrl":"http://user-service.example.com","description":"Updated service for user management","healthCheckUrl":"http://user-service.example.com/health","level":"info","message":"[PATCH] updateServiceDetails called for serviceName: 'user-service' with updates:","timestamp":"2025-07-18T14:59:28.139Z"}
+{"level":"info","message":"[serviceService] updateServiceDetails called for serviceName: 'user-service'","timestamp":"2025-07-18T14:59:28.139Z"}
+{"level":"info","message":"Service details updated: user-service","timestamp":"2025-07-18T14:59:28.140Z"}
+{"level":"info","message":"[serviceService] Resolved filePath: /Users/chrishughes/Projects/PDS-2.0/api-registry/storage/services/user-service.json","timestamp":"2025-07-18T14:59:28.139Z"}

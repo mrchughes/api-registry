@@ -1,0 +1,72 @@
+/* API Registry custom styles */
+.govuk-header__logotype {
+    font-weight: bold;
+}
+
+.govuk-footer__copyright-logo {
+    display: inline-block;
+    min-width: 125px;
+    padding-top: 112px;
+    background-image: url('/assets/images/govuk-crest.png');
+    background-repeat: no-repeat;
+    background-position: 50% 0%;
+    background-size: 125px 102px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 15px;
+}
+
+.app-card {
+    border: 1px solid #b1b4b6;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f8f8f8;
+}
+
+.app-card__title {
+    margin-top: 0;
+}
+
+.app-card__status {
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 3px;
+    margin-left: 10px;
+}
+
+.app-card__status--active {
+    background-color: #00703c;
+    color: white;
+}
+
+.app-card__status--maintenance {
+    background-color: #ffdd00;
+    color: #0b0c0c;
+}
+
+.app-card__status--deprecated {
+    background-color: #d4351c;
+    color: white;
+}
+
+.app-version-tag {
+    display: inline-block;
+    background-color: #1d70b8;
+    color: white;
+    padding: 3px 8px;
+    font-size: 14px;
+    border-radius: 3px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.app-version-tag--deprecated {
+    background-color: #d4351c;
+}

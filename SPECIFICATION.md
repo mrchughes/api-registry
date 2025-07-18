@@ -15,7 +15,7 @@ As part of the PDS 2.0 ecosystem, the API Registry follows these architectural p
 
 2. **Complete Implementation**:
    - All endpoints must be fully implemented with no placeholders
-   - Error handling must follow the PDS error handling standards
+   - Error handling must follow the [PDS error handling standards](../pds-specifications/protocols/ERROR_HANDLING_STANDARDS.md)
    - All required functionality must be present before deployment
 
 3. **API Publication**:
@@ -28,6 +28,20 @@ As part of the PDS 2.0 ecosystem, the API Registry follows these architectural p
    - Must meet WCAG 2.1 AA accessibility standards
    - Must follow GOV.UK content design guidelines
    - Error messages must follow GOV.UK standards
+
+5. **Data Persistence Requirements**:
+   - This service MUST implement persistent data storage with the following requirements:
+   - **Database Technology**: MongoDB (or PostgreSQL/MySQL)
+   - **Data Models**: All data models defined in the API must be persisted in the database
+   - **Data Migration**: Service must include database migration scripts for version upgrades
+   - **Backup and Recovery**: Service must support automated backups and point-in-time recovery
+   - **Data Validation**: All data must be validated before storage using defined schemas
+   - **No In-Memory Only Storage**: No service data should be stored only in memory
+
+6. **Service Integration Standards**:
+   - This service MUST follow the integration standards defined in [SERVICE_INTEGRATION.md](../pds-specifications/protocols/SERVICE_INTEGRATION.md)
+   - All inter-service communication must adhere to these standards
+   - Error handling, authentication, and API versioning must comply with the defined patterns
 
 ## Service Responsibilities
 
@@ -58,6 +72,147 @@ As part of the PDS 2.0 ecosystem, the API Registry follows these architectural p
 
 - All endpoints must be designed and documented using OpenAPI 3.0 before implementation
 - API specifications must be stored in the `/specifications` directory
+
+## UI Implementation Requirements
+
+All user interfaces MUST be implemented with the following requirements:
+
+1. **Technology Stack**:
+   - React.js or Vue.js framework
+   - TypeScript for all frontend code
+   - Responsive design supporting mobile and desktop views
+     
+2. **UI Components**:
+   - All components must be fully functional, with no placeholders
+   - Must include loading states, error states, and empty states
+   - All forms must include client-side validation with clear error messages
+     
+3. **Accessibility**:
+   - WCAG 2.1 AA compliance is required
+   - All interactive elements must be keyboard accessible
+   - Proper ARIA attributes and semantic HTML
+   - Color contrast meeting accessibility standards
+     
+4. **Design System**:
+   - GOV.UK Design System for government services
+   - Must include design tokens for colors, typography, spacing
+     
+5. **User Flows**:
+   - Complete implementation of all user journeys
+   - Clear navigation between related screens
+   - Breadcrumbs for complex flows
+   - Progress indicators for multi-step processes
+
+## Testing Requirements
+
+All services MUST include comprehensive testing with the following requirements:
+
+1. **Unit Tests**:
+   - Minimum 80% code coverage
+   - Tests for all business logic and utility functions
+   - Mock external dependencies
+     
+2. **Integration Tests**:
+   - Tests for all API endpoints
+   - Database integration tests
+   - Authentication and authorization tests
+     
+3. **End-to-End Tests**:
+   - Tests for critical user flows
+   - UI component tests
+   - Cross-browser compatibility tests
+     
+4. **Performance Tests**:
+   - Load testing for expected traffic
+   - Stress testing for peak loads
+   - Endpoint response time benchmarks
+     
+5. **Security Tests**:
+   - Input validation tests
+   - Authentication and authorization tests
+   - CSRF, XSS, and SQL injection tests
+
+## Docker and Deployment Requirements
+
+All services MUST include Docker and deployment configurations with the following requirements:
+
+1. **Docker**:
+   - Multi-stage builds for optimized images
+   - Proper health checks
+   - Environment variable configuration
+   - Volume mounts for persistent data
+   - Docker Compose for local development
+     
+2. **Environment Configuration**:
+   - Clear separation of development, testing, and production environments
+   - Environment-specific configuration via environment variables
+   - Secrets management
+     
+3. **Logging and Monitoring**:
+   - Structured logging (JSON format)
+   - Metrics collection endpoints
+   - Health check endpoints
+   - Resource usage monitoring
+     
+4. **Deployment Automation**:
+   - CI/CD pipeline configuration
+   - Automated testing in pipeline
+   - Zero-downtime deployment strategy
+
+## Documentation Requirements
+
+All services MUST include comprehensive documentation with the following requirements:
+
+1. **API Documentation**:
+   - Complete OpenAPI/Swagger documentation
+   - Examples for all request/response pairs
+   - Authentication and authorization details
+     
+2. **Code Documentation**:
+   - JSDoc/TypeDoc comments for all public functions and classes
+   - README files for all major components
+   - Architecture diagrams
+     
+3. **User Documentation**:
+   - Step-by-step guides for common tasks
+   - Screenshots and video tutorials
+   - Troubleshooting guides
+     
+4. **Developer Onboarding**:
+   - Setup instructions
+   - Development workflow
+   - Testing procedures
+   - Contribution guidelines
+
+## Security Requirements
+
+All services MUST implement security measures with the following requirements:
+
+1. **Authentication**:
+   - JWT or OAuth 2.0 for API authentication
+   - Secure password storage with bcrypt or Argon2
+   - Multi-factor authentication for admin interfaces
+     
+2. **Authorization**:
+   - Role-based access control
+   - Resource-level permissions
+   - Context-aware authorization checks
+     
+3. **Data Protection**:
+   - HTTPS/TLS for all connections
+   - Encryption of sensitive data at rest
+   - Data minimization practices
+     
+4. **API Security**:
+   - Rate limiting
+   - Input validation and sanitization
+   - CSRF protection
+   - Content Security Policy
+     
+5. **Audit Logging**:
+   - Logging of all security events
+   - Tamper-evident logs
+   - Regular security audits
 - Changes to the API must be documented and versioned appropriately
 - API design must follow RESTful principles and standard HTTP methods
 - Must serve as the reference implementation for API-first design in the ecosystem

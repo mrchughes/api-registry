@@ -1,0 +1,672 @@
+openapi: 3.0.3
+info:
+  title: API Registry Service
+  description: Centralized registry for API specifications and service discovery in the PDS 2.0 ecosystem
+  version: 1.0.0
+  contact:
+    name: PDS 2.0 Team
+servers:
+  - url: https://api-registry.local
+    description: Production server
+  - url: http://localhost:3005
+    description: Local development server
+
+tags:
+  - name: specs
+    description: API specification operations
+  - name: auth
+    description: Authentication operations
+  - name: services
+    description: Service discovery operations
+  - name: docs
+    description: Documentation generation operations
+  - name: admin
+    description: Administrative operations
+  - name: sdk
+    description: SDK generation operations
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      description: Returns the health status of the API Registry service
+      operationId: getHealth
+      tags:
+        - admin
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  version:
+                    type: string
+                    example: "1.0.0"
+                  uptime:
+                    type: number
+                    example: 3600
+                  
+  /auth/login:
+    post:
+      summary: Administrator login
+      description: Authenticates an administrator user
+      operationId: adminLogin
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "admin@pds.local"
+                password:
+                  type: string
+                  format: password
+                  example: "password123"
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /auth/challenge:
+    post:
+      summary: Generate DID authentication challenge
+      description: Generates a challenge for DID-based authentication
+      operationId: generateChallenge
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                did:
+                  type: string
+                  example: "did:web:example.com"
+              required:
+                - did
+      responses:
+        '201':
+          description: Challenge generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  challenge:
+                    type: string
+                    example: "a1b2c3d4e5f6g7h8i9j0"
+                  expiresIn:
+                    type: string
+                    example: "5m"
+        '400':
+          description: Invalid DID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /auth/challenge/verify:
+    post:
+      summary: Verify DID authentication challenge
+      description: Verifies a signed challenge response for DID-based authentication
+      operationId: verifyChallenge
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                challengeId:
+                  type: string
+                  example: "a1b2c3d4e5f6g7h8i9j0"
+                response:
+                  type: string
+                  example: "signed_challenge_response"
+                scope:
+                  type: string
+                  example: "specs:write services:read"
+              required:
+                - challengeId
+                - response
+      responses:
+        '200':
+          description: Challenge verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+        '401':
+          description: Challenge verification failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /specs:
+    get:
+      summary: List all API specifications
+      description: Retrieves a list of all registered API specifications
+      operationId: listSpecs
+      tags:
+        - specs
+      parameters:
+        - name: service
+          in: query
+          description: Filter by service name
+          required: false
+          schema:
+            type: string
+        - name: version
+          in: query
+          description: Filter by API version
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of API specifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SpecSummary'
+    post:
+      summary: Register a new API specification
+      description: Registers a new OpenAPI specification for a service
+      operationId: registerSpec
+      tags:
+        - specs
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpecRegistration'
+      responses:
+        '201':
+          description: API specification registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpecDetail'
+        '400':
+          description: Invalid specification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Specification already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /specs/{serviceId}:
+    get:
+      summary: Get API specifications for a service
+      description: Retrieves all versions of API specifications for a specific service
+      operationId: getServiceSpecs
+      tags:
+        - specs
+      parameters:
+        - name: serviceId
+          in: path
+          description: The ID of the service
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: API specifications for the service
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SpecSummary'
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /specs/{serviceId}/{version}:
+    get:
+      summary: Get a specific API specification
+      description: Retrieves a specific version of an API specification for a service
+      operationId: getSpecVersion
+      tags:
+        - specs
+      parameters:
+        - name: serviceId
+          in: path
+          description: The ID of the service
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          description: The version of the API specification
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: API specification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpecDetail'
+        '404':
+          description: Specification not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update an API specification
+      description: Updates a specific version of an API specification for a service
+      operationId: updateSpec
+      tags:
+        - specs
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
+      parameters:
+        - name: serviceId
+          in: path
+          description: The ID of the service
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          description: The version of the API specification
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpecRegistration'
+      responses:
+        '200':
+          description: API specification updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpecDetail'
+        '400':
+          description: Invalid specification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specification not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete an API specification
+      description: Deletes a specific version of an API specification for a service
+      operationId: deleteSpec
+      tags:
+        - specs
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
+      parameters:
+        - name: serviceId
+          in: path
+          description: The ID of the service
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          description: The version of the API specification
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: API specification deleted successfully
+        '404':
+          description: Specification not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /services:
+    get:
+      summary: List all registered services
+      description: Retrieves a list of all registered services
+      operationId: listServices
+      tags:
+        - services
+      responses:
+        '200':
+          description: List of services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServiceInfo'
+                  
+  /services/{serviceId}:
+    get:
+      summary: Get service information
+      description: Retrieves information about a specific service
+      operationId: getService
+      tags:
+        - services
+      parameters:
+        - name: serviceId
+          in: path
+          description: The ID of the service
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Service information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceDetail'
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /docs/{serviceId}/{version}:
+    get:
+      summary: Get API documentation
+      description: Retrieves interactive documentation for a specific API specification
+      operationId: getDocs
+      tags:
+        - docs
+      parameters:
+        - name: serviceId
+          in: path
+          description: The ID of the service
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          description: The version of the API specification
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: API documentation
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Specification not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /sdk/{serviceId}/{version}/{language}:
+    get:
+      summary: Generate SDK
+      description: Generates a client SDK for a specific API specification
+      operationId: generateSdk
+      tags:
+        - sdk
+      parameters:
+        - name: serviceId
+          in: path
+          description: The ID of the service
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          description: The version of the API specification
+          required: true
+          schema:
+            type: string
+        - name: language
+          in: path
+          description: The programming language for the SDK
+          required: true
+          schema:
+            type: string
+            enum: [javascript, typescript, python, java, csharp]
+      responses:
+        '200':
+          description: Generated SDK
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Specification not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      
+  schemas:
+    AuthToken:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        token_type:
+          type: string
+          example: "Bearer"
+        expires_in:
+          type: number
+          example: 3600
+        refresh_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "invalid_request"
+        error_description:
+          type: string
+          example: "The request is missing a required parameter"
+        error_uri:
+          type: string
+          example: "https://api-registry.local/docs/errors#invalid_request"
+          
+    SpecSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "api-registry"
+        title:
+          type: string
+          example: "API Registry Service"
+        version:
+          type: string
+          example: "1.0.0"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-07-18T10:30:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-07-18T10:30:00Z"
+          
+    SpecDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "api-registry"
+        title:
+          type: string
+          example: "API Registry Service"
+        version:
+          type: string
+          example: "1.0.0"
+        description:
+          type: string
+          example: "Centralized registry for API specifications"
+        spec:
+          type: object
+          description: "The complete OpenAPI specification"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-07-18T10:30:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-07-18T10:30:00Z"
+          
+    SpecRegistration:
+      type: object
+      properties:
+        service_id:
+          type: string
+          example: "api-registry"
+        spec:
+          type: object
+          description: "The complete OpenAPI specification"
+      required:
+        - service_id
+        - spec
+        
+    ServiceInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "api-registry"
+        name:
+          type: string
+          example: "API Registry"
+        url:
+          type: string
+          example: "https://api-registry.local"
+        versions:
+          type: array
+          items:
+            type: string
+            example: "1.0.0"
+            
+    ServiceDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "api-registry"
+        name:
+          type: string
+          example: "API Registry"
+        description:
+          type: string
+          example: "Centralized registry for API specifications"
+        url:
+          type: string
+          example: "https://api-registry.local"
+        contact:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "PDS 2.0 Team"
+            email:
+              type: string
+              example: "support@pds.local"
+        versions:
+          type: array
+          items:
+            type: object
+            properties:
+              version:
+                type: string
+                example: "1.0.0"
+              status:
+                type: string
+                enum: [current, deprecated, beta]
+                example: "current"
+              deprecated_at:
+                type: string
+                format: date-time
+                example: null
+        status:
+          type: string
+          enum: [online, offline, maintenance]
+          example: "online"
+        metrics:
+          type: object
+          properties:
+            uptime:
+              type: number
+              example: 99.99
+            last_checked:
+              type: string
+              format: date-time
+              example: "2025-07-18T12:30:00Z"
