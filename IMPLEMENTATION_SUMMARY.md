@@ -1,4 +1,4 @@
-# Auth Service Implementation Summary
+# Identity Provider Service Implementation Summary
 
 ## Overview
 
@@ -232,4 +232,4 @@ The service successfully handles authentication and DID verification as specifie
    curl -X GET http://localhost:3005/auth/status
    ```
 
-The auth service is now ready for production use and integration with other PDS 2.0 services.
+The Identity Provider Service is now ready for production use and integration with other PDS 2.0 services.

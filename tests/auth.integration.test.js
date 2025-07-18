@@ -1,5 +1,5 @@
 /**
- * Integration Tests for Auth Service
+ * Integration Tests for Identity Provider Service
  * 
  * These tests verify the complete authentication flow including
  * the interaction between routes, middleware, and services.
@@ -29,7 +29,7 @@ app.use((error, req, res, next) => {
   });
 });
 
-describe('Auth Service Integration', () => {
+describe('Identity Provider Service Integration', () => {
   beforeEach(() => {
     // Set up test environment
     process.env.API_KEYS = 'test-key-1,test-key-2';
@@ -40,7 +40,7 @@ describe('Auth Service Integration', () => {
   });
 
   describe('Service Health and Status', () => {
-    it('should return auth service status', async () => {
+    it('should return Identity Provider Service status', async () => {
       const response = await request(app)
         .get('/auth/status')
         .expect(200);
@@ -227,7 +227,7 @@ describe('Auth Service Integration', () => {
   });
 });
 
-describe('Auth Service Performance', () => {
+describe('Identity Provider Service Performance', () => {
   it('should handle multiple concurrent requests', async () => {
     const requests = [];
     

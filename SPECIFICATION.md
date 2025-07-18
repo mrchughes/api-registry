@@ -86,7 +86,7 @@ Since the API Registry is a foundational service, it doesn't typically depend on
 
 | Service | Dependency Type | Purpose |
 |---------|----------------|---------|
-| Auth Service | Consumer | Publishes and discovers API specifications |
+| Identity Provider Service | Consumer | Publishes and discovers API specifications |
 | Solid PDS | Consumer | Publishes and discovers API specifications |
 | DRO | Consumer | Publishes and discovers API specifications |
 | FEP | Consumer | Publishes and discovers API specifications |
