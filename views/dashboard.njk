@@ -1,0 +1,160 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<h1 class="govuk-heading-        {% if service.authentication and service.authentication.type %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Authentication</dt>
+          <dd class="govuk-summary-list__value">
+            <span class="govuk-tag govuk-tag--green">{{ service.authentication.type }}</span>
+          </dd>
+        </div>
+        {% endif %}gistry Dashboard</h1>
+
+<p class="govuk-body-l">
+  Central hub for PDS 2.2 service discovery with WebID-centric authentication flows and enhanced metadata registry.
+</p>
+
+<div class="app-stats-grid">
+  <div class="app-stat-card">
+    <div class="app-stat-card__number">{{ stats.total }}</div>
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Total Services</h3>
+  </div>
+  
+  <div class="app-stat-card">
+    <div class="app-stat-card__number">{{ stats.active }}</div>
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Active Services</h3>
+  </div>
+  
+  <div class="app-stat-card">
+    <div class="app-stat-card__number">{{ stats.healthy }}</div>
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Healthy Services</h3>
+  </div>
+  
+  <div class="app-stat-card">
+    <div class="app-stat-card__number">{{ stats.healthPercentage }}%</div>
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Health Rate</h3>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h2 class="govuk-heading-l">Recent Services</h2>
+    
+    {% if recentServices.length > 0 %}
+    {% for service in recentServices %}
+    <div class="app-service-card">
+      <h3 class="app-service-card__title govuk-heading-m">
+        <a href="/services/{{ service._id }}" class="govuk-link">{{ service.name }}</a>
+        <strong class="govuk-tag {{ service.statusClass }}">{{ service.status }}</strong>
+      </h3>
+      
+      <p class="govuk-body">{{ service.description or "No description available" }}</p>
+      
+      <dl class="govuk-summary-list govuk-summary-list--no-border">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Category</dt>
+          <dd class="govuk-summary-list__value">{{ service.category | title }}</dd>
+        </div>
+        
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Base URL</dt>
+          <dd class="govuk-summary-list__value">
+            <a href="{{ service.baseUrl }}" class="govuk-link">{{ service.baseUrl }}</a>
+          </dd>
+        </div>
+        
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Version</dt>
+          <dd class="govuk-summary-list__value">{{ service.version }}</dd>
+        </div>
+        
+        {% if service.healthStatus %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Health</dt>
+          <dd class="govuk-summary-list__value">
+            <span class="app-health-indicator app-health-indicator--{{ service.healthStatus }}"></span>
+            <strong class="govuk-tag {{ service.healthClass }}">{{ service.healthStatus | title }}</strong>
+          </dd>
+        </div>
+        {% endif %}
+        
+        {% if service.authenticationTypes %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Authentication</dt>
+          <dd class="govuk-summary-list__value">
+            {% for authType in service.authenticationTypes %}
+            <span class="govuk-tag govuk-tag--grey govuk-!-margin-right-1">{{ authType }}</span>
+            {% endfor %}
+          </dd>
+        </div>
+        {% endif %}
+        
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Registered</dt>
+          <dd class="govuk-summary-list__value">{{ service.formattedDate }}</dd>
+        </div>
+      </dl>
+    </div>
+    {% endfor %}
+    
+    <p class="govuk-body">
+      <a href="/services" class="govuk-link">View all services</a>
+    </p>
+    {% else %}
+    <div class="govuk-inset-text">
+      <p>No services have been registered yet.</p>
+      <p><a href="/services/new" class="govuk-link">Register the first service</a></p>
+    </div>
+    {% endif %}
+  </div>
+  
+  <div class="govuk-grid-column-one-third">
+    <h2 class="govuk-heading-l">Quick Actions</h2>
+    
+    <div class="govuk-button-group">
+      <a href="/services/new" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+        Register Service
+      </a>
+      
+      <a href="/discovery" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+        Service Discovery
+      </a>
+    </div>
+    
+    <h3 class="govuk-heading-m">Service Categories</h3>
+    
+    {% if categoryStats.length > 0 %}
+    <ul class="govuk-list">
+      {% for category in categoryStats %}
+      <li>
+        <a href="/services?category={{ category._id }}" class="govuk-link">
+          {{ category._id | title | replace("-", " ") }} ({{ category.count }})
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="govuk-body-s">No categories available</p>
+    {% endif %}
+    
+    <h3 class="govuk-heading-m">PDS 2.2 Features</h3>
+    
+    <ul class="govuk-list govuk-list--bullet">
+      <li>WebID-Centric Service Discovery</li>
+      <li>Dual Authentication Support</li>
+      <li>Enhanced Metadata Registry</li>
+      <li>Service Health Monitoring</li>
+      <li>Capability-Based Discovery</li>
+      <li>OpenAPI 3.0 Integration</li>
+    </ul>
+    
+    <div class="govuk-warning-text">
+      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive">Warning</span>
+        This is a development environment. Production deployments should implement proper authentication and authorization.
+      </strong>
+    </div>
+  </div>
+</div>
+{% endblock %}

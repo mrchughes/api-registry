@@ -1,8 +1,26 @@
-# API Registry Service Specification
+# API Registry Service Specification (PDS 2.2)
 
 ## Overview
 
-The API Registry Service is a centralized repository for API specifications across all microservices in the PDS 2.0 ecosystem. It enables services to publish their OpenAPI specifications and allows other services to discover and consume these specifications, facilitating service discovery and API contract enforcement.
+The API Registry Service is a centralized repository for API specifications across all microservices in the PDS 2.2 ecosystem. In PDS 2.2, the API Registry has been enhanced to support service discovery for both Solid-OIDC-like and DID challenge-response authentication flows, providing comprehensive metadata about service capabilities and authentication requirements.
+
+## PDS 2.2 Enhanced Features
+
+### Service Authentication Type Registry
+- Categorizes services by authentication method (Solid-OIDC-like vs DID challenge-response)
+- Provides authentication flow metadata for service discovery
+- Tracks service capabilities and supported token scopes
+- Maintains service health and availability status
+
+### WebID-Aware Service Discovery
+- Enables services to discover which services support specific WebID operations
+- Provides routing information for credential operations
+- Maintains service compatibility matrix for different PDS versions
+
+### Enhanced API Documentation
+- OpenAPI specifications include PDS 2.2 authentication requirements
+- Documentation of supported credential types and operations
+- Service integration examples for both authentication flows
 
 ## Microservice Architecture Requirements
 

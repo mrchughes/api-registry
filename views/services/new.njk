@@ -1,0 +1,416 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">
+      {% if editMode %}Edit Service{% else %}Register New Service{% endif %}
+    </h1>
+    
+    <p class="govuk-body-l">
+      {% if editMode %}
+      Update the service registration details below. All fields marked with an asterisk (*) are required.
+      {% else %}
+      Register a new service in the PDS 2.2 API Registry. All fields marked with an asterisk (*) are required.
+      {% endif %}
+    </p>
+    
+    {% if errors %}
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-module="govuk-error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+        There is a problem
+      </h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          {% for error in errors %}
+          <li>
+            <a href="#{{ error.field }}">{{ error.message }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+    
+    <form method="POST" action="{% if editMode %}/services/{{ service._id }}{% else %}/services{% endif %}" novalidate>
+      <div class="govuk-form-group {% if errors | findWhere('field', 'name') %}govuk-form-group--error{% endif %}">
+        <label class="govuk-label govuk-label--m" for="name">
+          Service Name *
+        </label>
+        <div id="name-hint" class="govuk-hint">
+          A clear, descriptive name for the service (e.g., "Identity Provider", "Data Storage Service")
+        </div>
+        {% if errors | findWhere('field', 'name') %}
+        <p id="name-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span> {{ (errors | findWhere('field', 'name')).message }}
+        </p>
+        {% endif %}
+        <input class="govuk-input {% if errors | findWhere('field', 'name') %}govuk-input--error{% endif %}" 
+               id="name" 
+               name="name" 
+               type="text" 
+               value="{{ formData.name or service.name }}"
+               aria-describedby="name-hint {% if errors | findWhere('field', 'name') %}name-error{% endif %}">
+      </div>
+      
+      <div class="govuk-form-group {% if errors.displayName %}govuk-form-group--error{% endif %}">
+        <label class="govuk-label govuk-label--m" for="displayName">
+          Display Name *
+        </label>
+        <div id="displayName-hint" class="govuk-hint">
+          Human-friendly name for the service as it will appear in listings
+        </div>
+        {% if errors.displayName %}
+        <p id="displayName-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span> {{ errors.displayName }}
+        </p>
+        {% endif %}
+        <input class="govuk-input {% if errors.displayName %}govuk-input--error{% endif %}" 
+               id="displayName" 
+               name="displayName" 
+               type="text" 
+               value="{{ formData.displayName or service.displayName }}"
+               aria-describedby="displayName-hint {% if errors.displayName %}displayName-error{% endif %}">
+      </div>
+      
+      <div class="govuk-form-group {% if errors | findWhere('field', 'description') %}govuk-form-group--error{% endif %}">
+        <label class="govuk-label govuk-label--m" for="description">
+          Description
+        </label>
+        <div id="description-hint" class="govuk-hint">
+          Brief description of what this service does and its purpose in the PDS ecosystem
+        </div>
+        {% if errors | findWhere('field', 'description') %}
+        <p id="description-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span> {{ (errors | findWhere('field', 'description')).message }}
+        </p>
+        {% endif %}
+        <textarea class="govuk-textarea {% if errors | findWhere('field', 'description') %}govuk-textarea--error{% endif %}" 
+                  id="description" 
+                  name="description" 
+                  rows="4"
+                  aria-describedby="description-hint {% if errors | findWhere('field', 'description') %}description-error{% endif %}">{{ formData.description or service.description }}</textarea>
+      </div>
+      
+      <div class="govuk-form-group {% if errors | findWhere('field', 'baseUrl') %}govuk-form-group--error{% endif %}">
+        <label class="govuk-label govuk-label--m" for="baseUrl">
+          Base URL *
+        </label>
+        <div id="baseUrl-hint" class="govuk-hint">
+          The root URL where the service can be accessed (e.g., https://api.example.com/v1)
+        </div>
+        {% if errors | findWhere('field', 'baseUrl') %}
+        <p id="baseUrl-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span> {{ (errors | findWhere('field', 'baseUrl')).message }}
+        </p>
+        {% endif %}
+        <input class="govuk-input {% if errors | findWhere('field', 'baseUrl') %}govuk-input--error{% endif %}" 
+               id="baseUrl" 
+               name="baseUrl" 
+               type="url" 
+               value="{{ formData.baseUrl or service.baseUrl }}"
+               aria-describedby="baseUrl-hint {% if errors | findWhere('field', 'baseUrl') %}baseUrl-error{% endif %}">
+      </div>
+      
+      <div class="govuk-form-group {% if errors | findWhere('field', 'version') %}govuk-form-group--error{% endif %}">
+        <label class="govuk-label govuk-label--m" for="version">
+          Version *
+        </label>
+        <div id="version-hint" class="govuk-hint">
+          Semantic version of the service (e.g., 1.0.0, 2.1.3)
+        </div>
+        {% if errors | findWhere('field', 'version') %}
+        <p id="version-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span> {{ (errors | findWhere('field', 'version')).message }}
+        </p>
+        {% endif %}
+        <input class="govuk-input govuk-input--width-10 {% if errors | findWhere('field', 'version') %}govuk-input--error{% endif %}" 
+               id="version" 
+               name="version" 
+               type="text" 
+               value="{{ formData.version or service.version }}"
+               aria-describedby="version-hint {% if errors | findWhere('field', 'version') %}version-error{% endif %}">
+      </div>
+      
+      <div class="govuk-form-group {% if errors | findWhere('field', 'category') %}govuk-form-group--error{% endif %}">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            Service Category *
+          </legend>
+          <div id="category-hint" class="govuk-hint">
+            Select the category that best describes this service's primary function
+          </div>
+          {% if errors | findWhere('field', 'category') %}
+          <p id="category-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span> {{ (errors | findWhere('field', 'category')).message }}
+          </p>
+          {% endif %}
+          
+          <div class="govuk-radios" data-module="govuk-radios">
+            {% set categories = [
+              { value: 'identity-provider', text: 'Identity Provider' },
+              { value: 'data-storage', text: 'Data Storage' },
+              { value: 'authentication', text: 'Authentication Service' },
+              { value: 'authorization', text: 'Authorization Service' },
+              { value: 'notification', text: 'Notification Service' },
+              { value: 'discovery', text: 'Discovery Service' },
+              { value: 'monitoring', text: 'Monitoring & Analytics' },
+              { value: 'integration', text: 'Integration Service' },
+              { value: 'utility', text: 'Utility Service' },
+              { value: 'other', text: 'Other' }
+            ] %}
+            
+            {% for category in categories %}
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" 
+                     id="category-{{ category.value }}" 
+                     name="category" 
+                     type="radio" 
+                     value="{{ category.value }}"
+                     {% if (formData.category or service.category) === category.value %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="category-{{ category.value }}">
+                {{ category.text }}
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+        </fieldset>
+      </div>
+      
+      <div class="govuk-form-group {% if errors | findWhere('field', 'status') %}govuk-form-group--error{% endif %}">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            Service Status *
+          </legend>
+          <div id="status-hint" class="govuk-hint">
+            Current operational status of the service
+          </div>
+          {% if errors | findWhere('field', 'status') %}
+          <p id="status-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span> {{ (errors | findWhere('field', 'status')).message }}
+          </p>
+          {% endif %}
+          
+          <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" 
+                     id="status-active" 
+                     name="status" 
+                     type="radio" 
+                     value="active"
+                     {% if (formData.status or service.status or 'active') === 'active' %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="status-active">
+                Active
+              </label>
+            </div>
+            
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" 
+                     id="status-inactive" 
+                     name="status" 
+                     type="radio" 
+                     value="inactive"
+                     {% if (formData.status or service.status) === 'inactive' %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="status-inactive">
+                Inactive
+              </label>
+            </div>
+            
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" 
+                     id="status-deprecated" 
+                     name="status" 
+                     type="radio" 
+                     value="deprecated"
+                     {% if (formData.status or service.status) === 'deprecated' %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="status-deprecated">
+                Deprecated
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      
+      <div class="govuk-form-group {% if errors | findWhere('field', 'webId') %}govuk-form-group--error{% endif %}">
+        <label class="govuk-label govuk-label--m" for="webId">
+          WebID (PDS 2.2)
+        </label>
+        <div id="webId-hint" class="govuk-hint">
+          WebID URI for PDS 2.2 WebID-centric service discovery (optional but recommended)
+        </div>
+        {% if errors | findWhere('field', 'webId') %}
+        <p id="webId-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span> {{ (errors | findWhere('field', 'webId')).message }}
+        </p>
+        {% endif %}
+        <input class="govuk-input {% if errors | findWhere('field', 'webId') %}govuk-input--error{% endif %}" 
+               id="webId" 
+               name="webId" 
+               type="url" 
+               value="{{ formData.webId or service.webId }}"
+               aria-describedby="webId-hint {% if errors | findWhere('field', 'webId') %}webId-error{% endif %}">
+      </div>
+      
+      <div class="govuk-form-group {% if errors.displayName %}govuk-form-group--error{% endif %}">
+        <label class="govuk-label govuk-label--m" for="displayName">
+          Display Name *
+        </label>
+        <div id="displayName-hint" class="govuk-hint">
+          Human-friendly name for the service as it will appear in listings
+        </div>
+        {% if errors.displayName %}
+        <p id="displayName-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span> {{ errors.displayName }}
+        </p>
+        {% endif %}
+        <input class="govuk-input {% if errors.displayName %}govuk-input--error{% endif %}" 
+               id="displayName" 
+               name="displayName" 
+               type="text" 
+               value="{{ formData.displayName or service.displayName }}"
+               aria-describedby="displayName-hint {% if errors.displayName %}displayName-error{% endif %}">
+      </div>
+
+      <div class="govuk-form-group {% if errors.authenticationType %}govuk-form-group--error{% endif %}">
+        <label class="govuk-label govuk-label--m" for="authenticationType">
+          Authentication Type *
+        </label>
+        <div id="authenticationType-hint" class="govuk-hint">
+          Primary authentication method used by this service in the PDS 2.2 ecosystem
+        </div>
+        {% if errors.authenticationType %}
+        <p id="authenticationType-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span> {{ errors.authenticationType }}
+        </p>
+        {% endif %}
+        <select class="govuk-select {% if errors.authenticationType %}govuk-select--error{% endif %}" 
+                id="authenticationType" 
+                name="authenticationType"
+                aria-describedby="authenticationType-hint {% if errors.authenticationType %}authenticationType-error{% endif %}">
+          <option value="">Choose authentication type</option>
+          {% for authType in authTypeOptions %}
+          <option value="{{ authType.value }}" {% if (formData.authenticationType or service.authentication.type) === authType.value %}selected{% endif %}>
+            {{ authType.text }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="govuk-form-group">
+        <label class="govuk-label govuk-label--m" for="capabilities">
+          Service Capabilities
+        </label>
+        <div id="capabilities-hint" class="govuk-hint">
+          Comma-separated list of capabilities (e.g., "read-data, write-data, user-management")
+        </div>
+        <textarea class="govuk-textarea" 
+                  id="capabilities" 
+                  name="capabilities" 
+                  rows="3"
+                  aria-describedby="capabilities-hint">{% if formData.capabilities %}{{ formData.capabilities | join(", ") }}{% elif service.capabilities %}{{ service.capabilities | join(", ") }}{% endif %}</textarea>
+      </div>
+      
+      <div class="govuk-form-group">
+        <label class="govuk-label govuk-label--m" for="tags">
+          Tags
+        </label>
+        <div id="tags-hint" class="govuk-hint">
+          Comma-separated list of tags for categorization and search (e.g., "production, v2, identity")
+        </div>
+        <input class="govuk-input" 
+               id="tags" 
+               name="tags" 
+               type="text" 
+               value="{% if formData.tags %}{{ formData.tags | join(", ") }}{% elif service.tags %}{{ service.tags | join(", ") }}{% endif %}"
+               aria-describedby="tags-hint">
+      </div>
+      
+      <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            Advanced Options
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="healthCheckUrl">
+              Health Check URL
+            </label>
+            <div id="healthCheckUrl-hint" class="govuk-hint">
+              URL endpoint for service health monitoring (will be checked periodically)
+            </div>
+            <input class="govuk-input" 
+                   id="healthCheckUrl" 
+                   name="healthCheckUrl" 
+                   type="url" 
+                   value="{{ formData.healthCheckUrl or service.healthCheckUrl }}"
+                   aria-describedby="healthCheckUrl-hint">
+          </div>
+          
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="registeredBy">
+              Registered By
+            </label>
+            <div id="registeredBy-hint" class="govuk-hint">
+              Name or identifier of the person/system registering this service
+            </div>
+            <input class="govuk-input" 
+                   id="registeredBy" 
+                   name="registeredBy" 
+                   type="text" 
+                   value="{{ formData.registeredBy or service.registeredBy }}"
+                   aria-describedby="registeredBy-hint">
+          </div>
+        </div>
+      </details>
+      
+      <div class="govuk-button-group">
+        <button class="govuk-button" data-module="govuk-button">
+          {% if editMode %}Update Service{% else %}Register Service{% endif %}
+        </button>
+        
+        <a class="govuk-link" href="{% if editMode %}/services/{{ service._id }}{% else %}/services{% endif %}">Cancel</a>
+      </div>
+    </form>
+  </div>
+  
+  <div class="govuk-grid-column-one-third">
+    <h2 class="govuk-heading-m">PDS 2.2 Features</h2>
+    
+    <p class="govuk-body-s">This registry supports the enhanced features of PDS 2.2:</p>
+    
+    <ul class="govuk-list govuk-list--bullet govuk-body-s">
+      <li><strong>WebID-Centric Discovery:</strong> Services can be associated with WebID profiles for identity-based discovery</li>
+      <li><strong>Dual Authentication:</strong> Support for both Solid-OIDC and DID challenge-response authentication</li>
+      <li><strong>Enhanced Metadata:</strong> Rich service metadata including capabilities and authentication types</li>
+      <li><strong>Health Monitoring:</strong> Automatic health checks and status tracking</li>
+      <li><strong>Capability-Based Discovery:</strong> Services can be discovered based on their declared capabilities</li>
+    </ul>
+    
+    <h3 class="govuk-heading-s">Authentication Types</h3>
+    
+    <dl class="govuk-summary-list govuk-summary-list--no-border">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key govuk-body-s">Solid-OIDC</dt>
+        <dd class="govuk-summary-list__value govuk-body-s">Standard Solid identity protocol</dd>
+      </div>
+      
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key govuk-body-s">DID Challenge-Response</dt>
+        <dd class="govuk-summary-list__value govuk-body-s">Decentralized identifier authentication</dd>
+      </div>
+      
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key govuk-body-s">Bearer Token</dt>
+        <dd class="govuk-summary-list__value govuk-body-s">Simple token-based authentication</dd>
+      </div>
+    </dl>
+    
+    <div class="govuk-inset-text">
+      <p class="govuk-body-s">
+        For production deployments, ensure all URLs use HTTPS and authentication is properly configured.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

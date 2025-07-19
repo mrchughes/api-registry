@@ -141,7 +141,7 @@ LOG_LEVEL=info
 ## Documentation
 
 ### Created Documentation
-- **Implementation Guide**: `docs/OIDC-Identity-Service-implementation.md`
+// ...existing code...
 - **OpenAPI Specification**: Updated with authentication endpoints
 - **Environment Configuration**: `.env.example` with all required variables
 - **Test Suite**: Comprehensive test coverage

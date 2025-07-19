@@ -1,0 +1,261 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <span class="govuk-caption-xl">{{ service.category | title | replace("-", " ") }}</span>
+    <h1 class="govuk-heading-xl">
+      {{ service.name }}
+      <strong class="govuk-tag {{ service.statusClass }}">{{ service.status }}</strong>
+      {% if service.healthStatus %}
+      <strong class="govuk-tag {{ service.healthClass }}">{{ service.healthStatus | title }}</strong>
+      {% endif %}
+    </h1>
+    
+    {% if service.description %}
+    <p class="govuk-body-l">{{ service.description }}</p>
+    {% endif %}
+    
+    <div class="govuk-button-group">
+      <a href="/services/{{ service._id }}/edit" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+        Edit Service
+      </a>
+      
+      {% if service.openApiSpec %}
+      <a href="/specs/{{ service._id }}/openapi" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+        View OpenAPI Spec
+      </a>
+      {% endif %}
+      
+      <a href="{{ service.baseUrl }}" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+        Visit Service
+      </a>
+      
+      <a href="/services" class="govuk-link">Back to services</a>
+    </div>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h2 class="govuk-heading-l">Service Details</h2>
+    
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Service ID</dt>
+        <dd class="govuk-summary-list__value">
+          <code class="app-code">{{ service._id }}</code>
+        </dd>
+      </div>
+      
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Base URL</dt>
+        <dd class="govuk-summary-list__value">
+          <a href="{{ service.baseUrl }}" class="govuk-link">{{ service.baseUrl }}</a>
+        </dd>
+      </div>
+      
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Version</dt>
+        <dd class="govuk-summary-list__value">{{ service.version }}</dd>
+      </div>
+      
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Category</dt>
+        <dd class="govuk-summary-list__value">{{ service.category | title | replace("-", " ") }}</dd>
+      </div>
+      
+      {% if service.webId %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">WebID</dt>
+        <dd class="govuk-summary-list__value">
+          <a href="{{ service.webId }}" class="govuk-link">{{ service.webId }}</a>
+        </dd>
+      </div>
+      {% endif %}
+      
+            {% if service.authentication and service.authentication.type %}
+      <dt class="govuk-summary-list__key">
+        Authentication Type
+      </dt>
+      <dd class="govuk-summary-list__value">
+        <strong class="govuk-tag govuk-tag--blue">
+          {{ service.authentication.type | replace('-', ' ') | title }}
+        </strong>
+      </dd>
+      {% endif %}
+      
+      {% if service.capabilities and service.capabilities.length > 0 %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Capabilities</dt>
+        <dd class="govuk-summary-list__value">
+          {% for capability in service.capabilities %}
+          <span class="govuk-tag govuk-tag--blue govuk-!-margin-right-1 govuk-!-margin-bottom-1">{{ capability }}</span>
+          {% endfor %}
+        </dd>
+      </div>
+      {% endif %}
+      
+      {% if service.endpoints and service.endpoints.length > 0 %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Key Endpoints</dt>
+        <dd class="govuk-summary-list__value">
+          <ul class="govuk-list">
+            {% for endpoint in service.endpoints %}
+            <li>
+              <strong>{{ endpoint.method | upper }}</strong> 
+              <code class="app-code">{{ endpoint.path }}</code>
+              {% if endpoint.description %}- {{ endpoint.description }}{% endif %}
+            </li>
+            {% endfor %}
+          </ul>
+        </dd>
+      </div>
+      {% endif %}
+      
+      {% if service.tags and service.tags.length > 0 %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Tags</dt>
+        <dd class="govuk-summary-list__value">
+          {% for tag in service.tags %}
+          <span class="govuk-tag govuk-tag--yellow govuk-!-margin-right-1 govuk-!-margin-bottom-1">{{ tag }}</span>
+          {% endfor %}
+        </dd>
+      </div>
+      {% endif %}
+      
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Registered</dt>
+        <dd class="govuk-summary-list__value">
+          {{ service.formattedDate }}
+          {% if service.registeredBy %}by {{ service.registeredBy }}{% endif %}
+        </dd>
+      </div>
+      
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Last Updated</dt>
+        <dd class="govuk-summary-list__value">{{ service.formattedUpdatedDate }}</dd>
+      </div>
+    </dl>
+    
+    {% if service.metadata %}
+    <h3 class="govuk-heading-m">Additional Metadata</h3>
+    
+    <dl class="govuk-summary-list">
+      {% for key, value in service.metadata %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">{{ key | title | replace("_", " ") }}</dt>
+        <dd class="govuk-summary-list__value">
+          {% if value | string | match("^https?://") %}
+          <a href="{{ value }}" class="govuk-link">{{ value }}</a>
+          {% else %}
+          {{ value }}
+          {% endif %}
+        </dd>
+      </div>
+      {% endfor %}
+    </dl>
+    {% endif %}
+    
+    {% if service.openApiSpec %}
+    <h3 class="govuk-heading-m">API Documentation</h3>
+    
+    <div class="govuk-inset-text">
+      <p>This service provides an OpenAPI specification for its API.</p>
+      <p>
+        <a href="/specs/{{ service._id }}/openapi" class="govuk-link">View OpenAPI specification</a> |
+        <a href="/specs/{{ service._id }}/swagger-ui" class="govuk-link">Interactive API explorer</a>
+      </p>
+    </div>
+    {% endif %}
+  </div>
+  
+  <div class="govuk-grid-column-one-third">
+    {% if healthLogs and healthLogs.length > 0 %}
+    <h2 class="govuk-heading-l">Health Status</h2>
+    
+    <div class="app-health-summary">
+      <div class="app-health-indicator app-health-indicator--{{ service.healthStatus }}"></div>
+      <h3 class="govuk-heading-m govuk-!-margin-bottom-1">{{ service.healthStatus | title }}</h3>
+      <p class="govuk-body-s">Last checked: {{ healthLogs[0].formattedDate }}</p>
+    </div>
+    
+    {% if healthLogs[0].responseTime %}
+    <p class="govuk-body-s">Response time: {{ healthLogs[0].responseTime }}ms</p>
+    {% endif %}
+    
+    {% if healthLogs[0].statusCode %}
+    <p class="govuk-body-s">Status code: {{ healthLogs[0].statusCode }}</p>
+    {% endif %}
+    
+    {% if healthLogs[0].errorMessage %}
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-module="govuk-error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+        Health Check Error
+      </h2>
+      <div class="govuk-error-summary__body">
+        <p>{{ healthLogs[0].errorMessage }}</p>
+      </div>
+    </div>
+    {% endif %}
+    
+    <h3 class="govuk-heading-s">Recent Health Checks</h3>
+    
+    <ul class="govuk-list govuk-list--bullet">
+      {% for log in healthLogs | slice(0, 10) %}
+      <li>
+        <span class="app-health-indicator app-health-indicator--{{ log.status }}"></span>
+        {{ log.status | title }} - {{ log.formattedDate }}
+        {% if log.responseTime %} ({{ log.responseTime }}ms){% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    
+    {% if healthLogs.length > 10 %}
+    <p class="govuk-body-s">
+      <a href="/services/{{ service._id }}/health" class="govuk-link">View all health checks</a>
+    </p>
+    {% endif %}
+    {% endif %}
+    
+    <h2 class="govuk-heading-l">Service Actions</h2>
+    
+    <ul class="govuk-list">
+      <li><a href="/services/{{ service._id }}/test" class="govuk-link">Test service connectivity</a></li>
+      <li><a href="/services/{{ service._id }}/validate" class="govuk-link">Validate service configuration</a></li>
+      {% if service.openApiSpec %}
+      <li><a href="/specs/{{ service._id }}/validate" class="govuk-link">Validate OpenAPI specification</a></li>
+      {% endif %}
+    </ul>
+    
+    <div class="govuk-warning-text">
+      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive">Warning</span>
+        Deleting this service will remove all associated data including health logs and API specifications.
+      </strong>
+    </div>
+    
+    <form method="POST" action="/services/{{ service._id }}/delete" onsubmit="return confirm('Are you sure you want to delete this service? This action cannot be undone.')">
+      <button class="govuk-button govuk-button--warning" data-module="govuk-button">
+        Delete Service
+      </button>
+    </form>
+    
+    <h3 class="govuk-heading-m">Related Services</h3>
+    
+    {% if relatedServices and relatedServices.length > 0 %}
+    <ul class="govuk-list">
+      {% for related in relatedServices %}
+      <li>
+        <a href="/services/{{ related._id }}" class="govuk-link">{{ related.name }}</a>
+        <span class="govuk-body-s">({{ related.category | title | replace("-", " ") }})</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="govuk-body-s">No related services found.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -170,7 +170,7 @@ describe('Authentication Service', () => {
         .get('/auth/status')
         .expect(200);
 
-      expect(response.body.service).toBe('OIDC-Identity-Service');
+      expect(response.body.service).toBe('api-registry-auth');
       expect(response.body.version).toBe('1.0.0');
       expect(response.body.status).toBe('active');
       expect(response.body.features).toBeDefined();

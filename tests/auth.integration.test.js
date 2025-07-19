@@ -40,12 +40,12 @@ describe('Identity Provider Service Integration', () => {
   });
 
   describe('Service Health and Status', () => {
-    it('should return Identity Provider Service status', async () => {
+    it('should return API Registry authentication service status', async () => {
       const response = await request(app)
         .get('/auth/status')
         .expect(200);
 
-      expect(response.body.service).toBe('OIDC-Identity-Service');
+      expect(response.body.service).toBe('api-registry-auth');
       expect(response.body.status).toBe('active');
       expect(response.body.features).toBeDefined();
       expect(response.body.features.apiKeyAuth).toBe(true);
@@ -242,7 +242,7 @@ describe('Identity Provider Service Performance', () => {
     const responses = await Promise.all(requests);
 
     responses.forEach(response => {
-      expect(response.body.service).toBe('OIDC-Identity-Service');
+      expect(response.body.service).toBe('api-registry-auth');
     });
   });
 

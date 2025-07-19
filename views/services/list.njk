@@ -1,0 +1,284 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl">Registered Services</h1>
+    
+    <div class="govuk-button-group">
+      <a href="/services/new" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+        Register New Service
+      </a>
+      
+      <a href="/discovery" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+        Service Discovery
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-quarter">
+    <h2 class="govuk-heading-m">Filters</h2>
+    
+    <form method="GET" action="/services">
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="search">
+          Search Services
+        </label>
+        <input class="govuk-input" id="search" name="search" type="text" value="{{ searchQuery }}" placeholder="Service name or description">
+      </div>
+      
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+            Category
+          </legend>
+          
+          <div class="govuk-radios govuk-radios--small">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="category-all" name="category" type="radio" value="" {% if not selectedCategory %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="category-all">
+                All Categories
+              </label>
+            </div>
+            
+            {% for category in availableCategories %}
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="category-{{ category }}" name="category" type="radio" value="{{ category }}" {% if selectedCategory === category %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="category-{{ category }}">
+                {{ category | title | replace("-", " ") }}
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+        </fieldset>
+      </div>
+      
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+            Status
+          </legend>
+          
+          <div class="govuk-radios govuk-radios--small">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="status-all" name="status" type="radio" value="" {% if not selectedStatus %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="status-all">
+                All Statuses
+              </label>
+            </div>
+            
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="status-active" name="status" type="radio" value="active" {% if selectedStatus === 'active' %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="status-active">
+                Active
+              </label>
+            </div>
+            
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="status-inactive" name="status" type="radio" value="inactive" {% if selectedStatus === 'inactive' %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="status-inactive">
+                Inactive
+              </label>
+            </div>
+            
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="status-deprecated" name="status" type="radio" value="deprecated" {% if selectedStatus === 'deprecated' %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="status-deprecated">
+                Deprecated
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+            Health Status
+          </legend>
+          
+          <div class="govuk-radios govuk-radios--small">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="health-all" name="health" type="radio" value="" {% if not selectedHealth %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="health-all">
+                All Health States
+              </label>
+            </div>
+            
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="health-healthy" name="health" type="radio" value="healthy" {% if selectedHealth === 'healthy' %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="health-healthy">
+                Healthy
+              </label>
+            </div>
+            
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="health-unhealthy" name="health" type="radio" value="unhealthy" {% if selectedHealth === 'unhealthy' %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="health-unhealthy">
+                Unhealthy
+              </label>
+            </div>
+            
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="health-unknown" name="health" type="radio" value="unknown" {% if selectedHealth === 'unknown' %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="health-unknown">
+                Unknown
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      
+      <div class="govuk-button-group">
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+          Apply Filters
+        </button>
+        
+        <a href="/services" class="govuk-link">Clear filters</a>
+      </div>
+    </form>
+  </div>
+  
+  <div class="govuk-grid-column-three-quarters">
+    {% if services.length > 0 %}
+    <div class="app-results-summary">
+      <p class="govuk-body">
+        Showing {{ services.length }} of {{ totalServices }} services
+        {% if searchQuery %} matching "{{ searchQuery }}"{% endif %}
+        {% if selectedCategory %} in category "{{ selectedCategory | title | replace("-", " ") }}"{% endif %}
+        {% if selectedStatus %} with status "{{ selectedStatus }}"{% endif %}
+        {% if selectedHealth %} with health status "{{ selectedHealth }}"{% endif %}
+      </p>
+    </div>
+    
+    {% for service in services %}
+    <div class="app-service-card">
+      <h3 class="app-service-card__title govuk-heading-m">
+        <a href="/services/{{ service._id }}" class="govuk-link">{{ service.name }}</a>
+        <strong class="govuk-tag {{ service.statusClass }}">{{ service.status }}</strong>
+        {% if service.healthStatus %}
+        <strong class="govuk-tag {{ service.healthClass }}">{{ service.healthStatus | title }}</strong>
+        {% endif %}
+      </h3>
+      
+      <p class="govuk-body">{{ service.description or "No description available" }}</p>
+      
+      <dl class="govuk-summary-list govuk-summary-list--no-border">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Category</dt>
+          <dd class="govuk-summary-list__value">{{ service.category | title | replace("-", " ") }}</dd>
+        </div>
+        
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Base URL</dt>
+          <dd class="govuk-summary-list__value">
+            <a href="{{ service.baseUrl }}" class="govuk-link">{{ service.baseUrl }}</a>
+          </dd>
+        </div>
+        
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Version</dt>
+          <dd class="govuk-summary-list__value">{{ service.version }}</dd>
+        </div>
+        
+        {% if service.authentication and service.authentication.type %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Authentication</dt>
+          <dd class="govuk-summary-list__value">
+            <span class="govuk-tag govuk-tag--grey govuk-!-margin-right-1">{{ service.authentication.type }}</span>
+          </dd>
+        </div>
+        {% endif %}
+        
+        {% if service.capabilities and service.capabilities.length > 0 %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Capabilities</dt>
+          <dd class="govuk-summary-list__value">
+            {% for capability in service.capabilities | slice(0, 5) %}
+            <span class="govuk-tag govuk-tag--blue govuk-!-margin-right-1">{{ capability }}</span>
+            {% endfor %}
+            {% if service.capabilities.length > 5 %}
+            <span class="govuk-body-s">and {{ service.capabilities.length - 5 }} more...</span>
+            {% endif %}
+          </dd>
+        </div>
+        {% endif %}
+        
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Registered</dt>
+          <dd class="govuk-summary-list__value">{{ service.formattedDate }}</dd>
+        </div>
+      </dl>
+      
+      <div class="govuk-button-group">
+        <a href="/services/{{ service._id }}" class="govuk-link">View details</a>
+        <a href="/services/{{ service._id }}/edit" class="govuk-link">Edit</a>
+        {% if service.openApiSpec %}
+        <a href="/specs/{{ service._id }}/openapi" class="govuk-link">OpenAPI Spec</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+    
+    {% if pagination.totalPages > 1 %}
+    <nav class="govuk-pagination" role="navigation" aria-label="results">
+      {% if pagination.currentPage > 1 %}
+      <div class="govuk-pagination__prev">
+        <a class="govuk-link govuk-pagination__link" href="?page={{ pagination.currentPage - 1 }}{% if searchQuery %}&search={{ searchQuery }}{% endif %}{% if selectedCategory %}&category={{ selectedCategory }}{% endif %}{% if selectedStatus %}&status={{ selectedStatus }}{% endif %}{% if selectedHealth %}&health={{ selectedHealth }}{% endif %}" rel="prev">
+          <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+            <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+          </svg>
+          <span class="govuk-pagination__link-title">Previous</span>
+        </a>
+      </div>
+      {% endif %}
+      
+      <ul class="govuk-pagination__list">
+        {% for pageNum in pagination.pages %}
+        {% if pageNum === pagination.currentPage %}
+        <li class="govuk-pagination__item govuk-pagination__item--current">
+          <a class="govuk-link govuk-pagination__link" href="#" aria-label="Page {{ pageNum }}" aria-current="page">{{ pageNum }}</a>
+        </li>
+        {% else %}
+        <li class="govuk-pagination__item">
+          <a class="govuk-link govuk-pagination__link" href="?page={{ pageNum }}{% if searchQuery %}&search={{ searchQuery }}{% endif %}{% if selectedCategory %}&category={{ selectedCategory }}{% endif %}{% if selectedStatus %}&status={{ selectedStatus }}{% endif %}{% if selectedHealth %}&health={{ selectedHealth }}{% endif %}" aria-label="Page {{ pageNum }}">{{ pageNum }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+      
+      {% if pagination.currentPage < pagination.totalPages %}
+      <div class="govuk-pagination__next">
+        <a class="govuk-link govuk-pagination__link" href="?page={{ pagination.currentPage + 1 }}{% if searchQuery %}&search={{ searchQuery }}{% endif %}{% if selectedCategory %}&category={{ selectedCategory }}{% endif %}{% if selectedStatus %}&status={{ selectedStatus }}{% endif %}{% if selectedHealth %}&health={{ selectedHealth }}{% endif %}" rel="next">
+          <span class="govuk-pagination__link-title">Next</span>
+          <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+            <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
+          </svg>
+        </a>
+      </div>
+      {% endif %}
+    </nav>
+    {% endif %}
+    
+    {% else %}
+    <div class="govuk-inset-text">
+      <p>
+        {% if searchQuery or selectedCategory or selectedStatus or selectedHealth %}
+        No services match your current filters.
+        {% else %}
+        No services have been registered yet.
+        {% endif %}
+      </p>
+      
+      {% if searchQuery or selectedCategory or selectedStatus or selectedHealth %}
+      <p><a href="/services" class="govuk-link">Clear filters</a> to see all services.</p>
+      {% endif %}
+      
+      <p><a href="/services/new" class="govuk-link">Register a new service</a></p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,36 +1,84 @@
 {
   "name": "api-registry",
-  "version": "1.0.0",
-  "description": "API Registry for Solid Microservices",
+  "version": "2.2.0",
+  "description": "API Registry for PDS 2.2 - WebID-Centric Service Discovery",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "jest",
-    "lint": "eslint src",
-    "update:libs": "git submodule update --remote --merge"
+    "test": "jest --testEnvironment=node",
+    "test:unit": "jest --testEnvironment=node tests/unit",
+    "test:integration": "jest --testEnvironment=node tests/integration",
+    "test:coverage": "jest --testEnvironment=node --coverage",
+    "test:watch": "jest --testEnvironment=node --watch",
+    "lint": "eslint src tests",
+    "lint:fix": "eslint src tests --fix",
+    "build:ui": "webpack --mode=production",
+    "dev:ui": "webpack --mode=development --watch",
+    "update:libs": "git submodule update --remote --merge",
+    "migrate": "node src/database/migrate.js",
+    "seed": "node src/database/seed.js"
   },
   "dependencies": {
+    "@apidevtools/swagger-parser": "^10.1.0",
+    "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
     "express-validator": "^7.0.1",
+    "govuk-frontend": "^4.7.0",
+    "helmet": "^7.0.0",
     "isomorphic-git": "^1.21.0",
-    "swagger-ui-express": "^4.6.3",
-    "@apidevtools/swagger-parser": "^10.1.0",
-    "yaml": "^2.2.2",
-    "winston": "^3.8.2",
+    "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.1",
+    "mongoose": "^7.3.0",
+    "multer": "^1.4.5-lts.1",
+    "nunjucks": "^3.2.4",
+    "pds-common": "file:../pds-common",
     "semver": "^7.5.1",
+    "swagger-ui-express": "^4.6.3",
     "uuid": "^9.0.0",
-    "pds-common": "file:../pds-common"
+    "winston": "^3.8.2",
+    "yaml": "^2.2.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.8.1",
     "eslint": "^8.40.0",
+    "html-webpack-plugin": "^5.5.3",
     "jest": "^29.5.0",
+    "mongodb-memory-server": "^10.1.4",
     "nodemon": "^2.0.22",
-    "supertest": "^6.3.3"
+    "sass": "^1.63.6",
+    "sass-loader": "^13.3.2",
+    "style-loader": "^3.3.3",
+    "supertest": "^6.3.3",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/database/migrations/**",
+      "!src/public/**"
+    ],
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ],
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   }
 }

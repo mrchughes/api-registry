@@ -1,0 +1,469 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl">Service Discovery</h1>
+    
+    <p class="govuk-body-l">
+      Discover PDS 2.2 services using WebID-centric, capability-bas        {% if service.authentication and service.authentication.type %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Authentication Type</dt>
+          <dd class="govuk-summary-list__value">
+            <span class="govuk-tag govuk-tag--blue">{{ service.authentication.type }}</span>
+          </dd>
+        </div>
+        {% endif %}ditional search methods.
+    </p>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-third">
+    <h2 class="govuk-heading-l">Discovery Options</h2>
+    
+    <form method="GET" action="/discovery" id="discoveryForm">
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            Discovery Method
+          </legend>
+          
+          <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" 
+                     id="method-webid" 
+                     name="method" 
+                     type="radio" 
+                     value="webid"
+                     {% if discoveryMethod === 'webid' %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="method-webid">
+                WebID-Centric Discovery
+              </label>
+              <div id="method-webid-hint" class="govuk-hint govuk-radios__hint">
+                Find services associated with a specific WebID profile
+              </div>
+            </div>
+            
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" 
+                     id="method-capability" 
+                     name="method" 
+                     type="radio" 
+                     value="capability"
+                     {% if discoveryMethod === 'capability' or not discoveryMethod %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="method-capability">
+                Capability-Based Discovery
+              </label>
+              <div id="method-capability-hint" class="govuk-hint govuk-radios__hint">
+                Find services that provide specific capabilities
+              </div>
+            </div>
+            
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" 
+                     id="method-traditional" 
+                     name="method" 
+                     type="radio" 
+                     value="traditional"
+                     {% if discoveryMethod === 'traditional' %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="method-traditional">
+                Traditional Search
+              </label>
+              <div id="method-traditional-hint" class="govuk-hint govuk-radios__hint">
+                Search by service name, description, or category
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      
+      <div class="govuk-form-group" id="webid-group" {% if discoveryMethod !== 'webid' %}style="display: none;"{% endif %}>
+        <label class="govuk-label govuk-label--s" for="webid">
+          WebID Profile URL
+        </label>
+        <div id="webid-hint" class="govuk-hint">
+          Enter the WebID URL to discover associated services
+        </div>
+        <input class="govuk-input" 
+               id="webid" 
+               name="webid" 
+               type="url" 
+               value="{{ webidQuery }}"
+               placeholder="https://example.com/profile#me"
+               aria-describedby="webid-hint">
+      </div>
+      
+      <div class="govuk-form-group" id="capability-group" {% if discoveryMethod === 'webid' or discoveryMethod === 'traditional' %}style="display: none;"{% endif %}>
+        <label class="govuk-label govuk-label--s" for="capabilities">
+          Required Capabilities
+        </label>
+        <div id="capabilities-hint" class="govuk-hint">
+          Comma-separated list of capabilities you need
+        </div>
+        <input class="govuk-input" 
+               id="capabilities" 
+               name="capabilities" 
+               type="text" 
+               value="{{ capabilityQuery }}"
+               placeholder="read-data, user-authentication"
+               aria-describedby="capabilities-hint">
+      </div>
+      
+      <div class="govuk-form-group" id="search-group" {% if discoveryMethod !== 'traditional' %}style="display: none;"{% endif %}>
+        <label class="govuk-label govuk-label--s" for="search">
+          Search Query
+        </label>
+        <div id="search-hint" class="govuk-hint">
+          Search service names, descriptions, or categories
+        </div>
+        <input class="govuk-input" 
+               id="search" 
+               name="search" 
+               type="text" 
+               value="{{ searchQuery }}"
+               placeholder="identity provider"
+               aria-describedby="search-hint">
+      </div>
+      
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+            Filters
+          </legend>
+          
+          <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" 
+                     id="filter-healthy" 
+                     name="healthyOnly" 
+                     type="checkbox" 
+                     value="true"
+                     {% if healthyOnly %}checked{% endif %}>
+              <label class="govuk-label govuk-checkboxes__label" for="filter-healthy">
+                Healthy services only
+              </label>
+            </div>
+            
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" 
+                     id="filter-active" 
+                     name="activeOnly" 
+                     type="checkbox" 
+                     value="true"
+                     {% if activeOnly %}checked{% endif %}>
+              <label class="govuk-label govuk-checkboxes__label" for="filter-active">
+                Active services only
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      
+      <div class="govuk-form-group">
+        <label class="govuk-label govuk-label--s" for="category">
+          Service Category
+        </label>
+        <select class="govuk-select" id="category" name="category">
+          <option value="">All categories</option>
+          <option value="identity-provider" {% if selectedCategory === 'identity-provider' %}selected{% endif %}>Identity Provider</option>
+          <option value="data-storage" {% if selectedCategory === 'data-storage' %}selected{% endif %}>Data Storage</option>
+          <option value="authentication" {% if selectedCategory === 'authentication' %}selected{% endif %}>Authentication Service</option>
+          <option value="authorization" {% if selectedCategory === 'authorization' %}selected{% endif %}>Authorization Service</option>
+          <option value="notification" {% if selectedCategory === 'notification' %}selected{% endif %}>Notification Service</option>
+          <option value="discovery" {% if selectedCategory === 'discovery' %}selected{% endif %}>Discovery Service</option>
+          <option value="monitoring" {% if selectedCategory === 'monitoring' %}selected{% endif %}>Monitoring & Analytics</option>
+          <option value="integration" {% if selectedCategory === 'integration' %}selected{% endif %}>Integration Service</option>
+          <option value="utility" {% if selectedCategory === 'utility' %}selected{% endif %}>Utility Service</option>
+          <option value="other" {% if selectedCategory === 'other' %}selected{% endif %}>Other</option>
+        </select>
+      </div>
+      
+      <div class="govuk-button-group">
+        <button class="govuk-button" data-module="govuk-button">
+          Discover Services
+        </button>
+        
+        <a href="/discovery" class="govuk-link">Clear all</a>
+      </div>
+    </form>
+  </div>
+  
+  <div class="govuk-grid-column-two-thirds">
+    {% if discoveryResults %}
+    <h2 class="govuk-heading-l">Discovery Results</h2>
+    
+    {% if discoveryResults.length > 0 %}
+    <div class="app-results-summary">
+      <p class="govuk-body">
+        Found {{ discoveryResults.length }} services
+        {% if discoveryMethod === 'webid' and webidQuery %} for WebID "{{ webidQuery }}"{% endif %}
+        {% if discoveryMethod === 'capability' and capabilityQuery %} with capabilities: {{ capabilityQuery }}{% endif %}
+        {% if discoveryMethod === 'traditional' and searchQuery %} matching "{{ searchQuery }}"{% endif %}
+      </p>
+      
+      {% if discoveryStats %}
+      <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            Discovery Statistics
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          <dl class="govuk-summary-list govuk-summary-list--no-border">
+            {% if discoveryStats.totalServices %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Total services searched</dt>
+              <dd class="govuk-summary-list__value">{{ discoveryStats.totalServices }}</dd>
+            </div>
+            {% endif %}
+            
+            {% if discoveryStats.averageScore %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Average relevance score</dt>
+              <dd class="govuk-summary-list__value">{{ discoveryStats.averageScore }}%</dd>
+            </div>
+            {% endif %}
+            
+            {% if discoveryStats.categoryCounts %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Categories found</dt>
+              <dd class="govuk-summary-list__value">
+                {% for category, count in discoveryStats.categoryCounts %}
+                {{ category | title | replace("-", " ") }} ({{ count }}){% if not loop.last %}, {% endif %}
+                {% endfor %}
+              </dd>
+            </div>
+            {% endif %}
+          </dl>
+        </div>
+      </details>
+      {% endif %}
+    </div>
+    
+    {% for service in discoveryResults %}
+    <div class="app-service-card">
+      <h3 class="app-service-card__title govuk-heading-m">
+        <a href="/services/{{ service._id }}" class="govuk-link">{{ service.name }}</a>
+        <strong class="govuk-tag {{ service.statusClass }}">{{ service.status }}</strong>
+        {% if service.healthStatus %}
+        <strong class="govuk-tag {{ service.healthClass }}">{{ service.healthStatus | title }}</strong>
+        {% endif %}
+        {% if service.discoveryScore %}
+        <span class="govuk-tag govuk-tag--blue">{{ service.discoveryScore }}% match</span>
+        {% endif %}
+      </h3>
+      
+      <p class="govuk-body">{{ service.description or "No description available" }}</p>
+      
+      <dl class="govuk-summary-list govuk-summary-list--no-border">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Category</dt>
+          <dd class="govuk-summary-list__value">{{ service.category | title | replace("-", " ") }}</dd>
+        </div>
+        
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Base URL</dt>
+          <dd class="govuk-summary-list__value">
+            <a href="{{ service.baseUrl }}" class="govuk-link">{{ service.baseUrl }}</a>
+          </dd>
+        </div>
+        
+        {% if service.webId %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">WebID</dt>
+          <dd class="govuk-summary-list__value">
+            <a href="{{ service.webId }}" class="govuk-link">{{ service.webId }}</a>
+          </dd>
+        </div>
+        {% endif %}
+        
+        {% if service.authenticationTypes and service.authenticationTypes.length > 0 %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Authentication</dt>
+          <dd class="govuk-summary-list__value">
+            {% for authType in service.authenticationTypes %}
+            <span class="govuk-tag govuk-tag--grey govuk-!-margin-right-1">{{ authType }}</span>
+            {% endfor %}
+          </dd>
+        </div>
+        {% endif %}
+        
+        {% if service.capabilities and service.capabilities.length > 0 %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Capabilities</dt>
+          <dd class="govuk-summary-list__value">
+            {% for capability in service.capabilities | slice(0, 5) %}
+            <span class="govuk-tag govuk-tag--blue govuk-!-margin-right-1">{{ capability }}</span>
+            {% endfor %}
+            {% if service.capabilities.length > 5 %}
+            <span class="govuk-body-s">and {{ service.capabilities.length - 5 }} more...</span>
+            {% endif %}
+          </dd>
+        </div>
+        {% endif %}
+        
+        {% if service.matchingReasons and service.matchingReasons.length > 0 %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Why this matches</dt>
+          <dd class="govuk-summary-list__value">
+            <ul class="govuk-list govuk-list--bullet govuk-body-s">
+              {% for reason in service.matchingReasons %}
+              <li>{{ reason }}</li>
+              {% endfor %}
+            </ul>
+          </dd>
+        </div>
+        {% endif %}
+      </dl>
+      
+      <div class="govuk-button-group">
+        <a href="/services/{{ service._id }}" class="govuk-link">View details</a>
+        <a href="{{ service.baseUrl }}" class="govuk-link">Visit service</a>
+        {% if service.openApiSpec %}
+        <a href="/specs/{{ service._id }}/openapi" class="govuk-link">API docs</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+    
+    {% else %}
+    <div class="govuk-inset-text">
+      <p>
+        No services found matching your discovery criteria.
+      </p>
+      
+      <p>Try:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Using different search terms or capabilities</li>
+        <li>Removing some filters</li>
+        <li>Checking if the WebID URL is correct</li>
+        <li><a href="/services" class="govuk-link">Browsing all registered services</a></li>
+      </ul>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <h2 class="govuk-heading-l">How Discovery Works</h2>
+    
+    <p class="govuk-body">
+      The PDS 2.2 API Registry provides several methods for discovering services that meet your needs:
+    </p>
+    
+    <div class="govuk-tabs" data-module="govuk-tabs">
+      <h2 class="govuk-tabs__title">
+        Contents
+      </h2>
+      <ul class="govuk-tabs__list">
+        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+          <a class="govuk-tabs__tab" href="#webid-discovery">
+            WebID-Centric
+          </a>
+        </li>
+        <li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#capability-discovery">
+            Capability-Based
+          </a>
+        </li>
+        <li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#traditional-discovery">
+            Traditional Search
+          </a>
+        </li>
+      </ul>
+      
+      <div class="govuk-tabs__panel" id="webid-discovery">
+        <h2 class="govuk-heading-m">WebID-Centric Discovery</h2>
+        
+        <p class="govuk-body">
+          Find services that are specifically associated with a WebID profile. This is useful when you know 
+          someone's identity and want to discover what services they provide or are associated with.
+        </p>
+        
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Services are matched based on WebID domain or exact profile matches</li>
+          <li>Higher scores for exact WebID matches</li>
+          <li>Partial scores for services from the same domain</li>
+          <li>Ideal for identity-driven service discovery</li>
+        </ul>
+      </div>
+      
+      <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="capability-discovery">
+        <h2 class="govuk-heading-m">Capability-Based Discovery</h2>
+        
+        <p class="govuk-body">
+          Discover services based on the specific capabilities they provide. This is the most powerful 
+          method for finding services that can perform the functions you need.
+        </p>
+        
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Services are scored based on how many required capabilities they support</li>
+          <li>Partial matches are included with lower scores</li>
+          <li>Perfect for functional service discovery</li>
+          <li>Supports comma-separated capability lists</li>
+        </ul>
+        
+        <details class="govuk-details" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Common capabilities
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <ul class="govuk-list govuk-list--bullet">
+              <li><strong>read-data:</strong> Can retrieve user data</li>
+              <li><strong>write-data:</strong> Can store or modify user data</li>
+              <li><strong>user-authentication:</strong> Can authenticate users</li>
+              <li><strong>user-authorization:</strong> Can authorize user actions</li>
+              <li><strong>identity-management:</strong> Can manage user identities</li>
+              <li><strong>notification:</strong> Can send notifications</li>
+              <li><strong>monitoring:</strong> Can monitor system health</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+      
+      <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="traditional-discovery">
+        <h2 class="govuk-heading-m">Traditional Search</h2>
+        
+        <p class="govuk-body">
+          Standard text-based search across service names, descriptions, and categories. 
+          Use this when you want to browse services or search by keywords.
+        </p>
+        
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Searches service names, descriptions, and tags</li>
+          <li>Case-insensitive partial matching</li>
+          <li>Can be combined with category and status filters</li>
+          <li>Good for exploratory browsing</li>
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  // Show/hide form groups based on discovery method
+  document.addEventListener('DOMContentLoaded', function() {
+    const methodRadios = document.querySelectorAll('input[name="method"]');
+    const webidGroup = document.getElementById('webid-group');
+    const capabilityGroup = document.getElementById('capability-group');
+    const searchGroup = document.getElementById('search-group');
+    
+    function updateFormGroups() {
+      const selectedMethod = document.querySelector('input[name="method"]:checked').value;
+      
+      webidGroup.style.display = selectedMethod === 'webid' ? 'block' : 'none';
+      capabilityGroup.style.display = selectedMethod === 'capability' ? 'block' : 'none';
+      searchGroup.style.display = selectedMethod === 'traditional' ? 'block' : 'none';
+    }
+    
+    methodRadios.forEach(radio => {
+      radio.addEventListener('change', updateFormGroups);
+    });
+    
+    updateFormGroups();
+  });
+</script>
+{% endblock %}

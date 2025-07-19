@@ -253,7 +253,7 @@ router.get('/did', async (req, res) => {
  */
 router.get('/status', (req, res) => {
   res.json({
-    service: 'OIDC-Identity-Service',
+    service: 'api-registry-auth',
     version: '1.0.0',
     status: 'active',
     features: {

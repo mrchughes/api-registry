@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" class="govuk-template">
+<head>
+  <meta charset="utf-8">
+  <title>{% if title %}{{ title }} - {% endif %}API Registry - PDS 2.2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0c0c">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{{ assetPath }}/images/favicon.ico" type="image/x-icon">
+  <link rel="mask-icon" href="{{ assetPath }}/images/govuk-mask-icon.svg" color="#0b0c0c">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ assetPath }}/images/govuk-apple-touch-icon-180x180.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="{{ assetPath }}/images/govuk-apple-touch-icon-167x167.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="{{ assetPath }}/images/govuk-apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" href="{{ assetPath }}/images/govuk-apple-touch-icon.png">
+
+  <!--[if !IE 8]><!-->
+  <link href="{{ assetPath }}/govuk-frontend.min.css" rel="stylesheet">
+  <!--<![endif]-->
+
+  <!--[if IE 8]>
+  <link href="{{ assetPath }}/govuk-frontend-ie8.min.css" rel="stylesheet">
+  <![endif]-->
+
+  <style>
+    .app-service-card {
+      border: 1px solid #b1b4b6;
+      padding: 20px;
+      margin-bottom: 20px;
+      background-color: #f8f8f8;
+    }
+    
+    .app-service-card__title {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+    
+    .app-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .app-stat-card {
+      background: #fff;
+      border: 1px solid #b1b4b6;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .app-stat-card__number {
+      font-size: 3rem;
+      font-weight: bold;
+      line-height: 1;
+      margin-bottom: 10px;
+      color: #1d70b8;
+    }
+    
+    .app-discovery-form {
+      background: #f3f2f1;
+      padding: 20px;
+      margin-bottom: 30px;
+      border: 1px solid #b1b4b6;
+    }
+    
+    .app-breadcrumbs {
+      margin-bottom: 20px;
+    }
+    
+    .app-pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 30px;
+    }
+    
+    .app-pagination__info {
+      font-size: 0.875rem;
+      color: #505a5f;
+    }
+    
+    .app-health-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    
+    .app-health-indicator--healthy {
+      background-color: #00703c;
+    }
+    
+    .app-health-indicator--degraded {
+      background-color: #ffdd00;
+    }
+    
+    .app-health-indicator--unhealthy {
+      background-color: #d4351c;
+    }
+    
+    .app-filter-tags {
+      margin-bottom: 20px;
+    }
+    
+    .app-filter-tag {
+      display: inline-block;
+      background-color: #1d70b8;
+      color: white;
+      padding: 5px 10px;
+      margin-right: 10px;
+      margin-bottom: 5px;
+      text-decoration: none;
+      font-size: 0.875rem;
+      border-radius: 3px;
+    }
+    
+    .app-filter-tag:hover {
+      background-color: #003078;
+    }
+    
+    .app-filter-tag__remove {
+      margin-left: 5px;
+      color: white;
+      text-decoration: none;
+    }
+  </style>
+
+  <meta property="og:image" content="{{ assetPath }}/images/govuk-opengraph-image.png">
+</head>
+
+<body class="govuk-template__body">
+  <script>
+    document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
+  </script>
+
+  <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
+
+  <header class="govuk-header" role="banner" data-module="govuk-header">
+    <div class="govuk-header__container govuk-width-container">
+      <div class="govuk-header__logo">
+        <a href="/" class="govuk-header__link govuk-header__link--homepage">
+          <span class="govuk-header__logotype">
+            <span class="govuk-header__logotype-text">
+              {{ serviceName }}
+            </span>
+          </span>
+        </a>
+      </div>
+      <div class="govuk-header__content">
+        <a href="/" class="govuk-header__link govuk-header__service-name">
+          PDS 2.2 API Registry
+        </a>
+        <nav class="govuk-header__navigation" aria-label="Menu">
+          <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide menu">Menu</button>
+          <ul id="navigation" class="govuk-header__navigation-list">
+            <li class="govuk-header__navigation-item{% if pageId == 'dashboard' %} govuk-header__navigation-item--active{% endif %}">
+              <a class="govuk-header__link" href="/">
+                Dashboard
+              </a>
+            </li>
+            <li class="govuk-header__navigation-item{% if pageId == 'services' %} govuk-header__navigation-item--active{% endif %}">
+              <a class="govuk-header__link" href="/services">
+                Services
+              </a>
+            </li>
+            <li class="govuk-header__navigation-item{% if pageId == 'discovery' %} govuk-header__navigation-item--active{% endif %}">
+              <a class="govuk-header__link" href="/discovery">
+                Discovery
+              </a>
+            </li>
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="/api-docs">
+                API Docs
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <div class="govuk-width-container">
+    {% if breadcrumbs %}
+    <div class="govuk-breadcrumbs app-breadcrumbs">
+      <ol class="govuk-breadcrumbs__list">
+        {% for crumb in breadcrumbs %}
+        <li class="govuk-breadcrumbs__list-item">
+          {% if crumb.href %}
+          <a class="govuk-breadcrumbs__link" href="{{ crumb.href }}">{{ crumb.text }}</a>
+          {% else %}
+          {{ crumb.text }}
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
+    {% endif %}
+
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+      {% if errors %}
+      <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+          There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+          <ul class="govuk-list govuk-error-summary__list">
+            {% for field, message in errors %}
+            <li>
+              <a href="#{{ field }}">{{ message }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if successMessage %}
+      <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+          <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+            Success
+          </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">
+            {{ successMessage }}
+          </p>
+        </div>
+      </div>
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <footer class="govuk-footer" role="contentinfo">
+    <div class="govuk-width-container">
+      <div class="govuk-footer__meta">
+        <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+          <h2 class="govuk-visually-hidden">Support links</h2>
+          <ul class="govuk-footer__inline-list">
+            <li class="govuk-footer__inline-list-item">
+              <a class="govuk-footer__link" href="/api-docs">
+                API Documentation
+              </a>
+            </li>
+            <li class="govuk-footer__inline-list-item">
+              <a class="govuk-footer__link" href="/health">
+                Service Status
+              </a>
+            </li>
+          </ul>
+          <p class="govuk-footer__body">
+            PDS 2.2 API Registry - Enhanced service discovery with WebID-centric authentication flows.
+          </p>
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            class="govuk-footer__licence-logo"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 483.2 195.7"
+            height="17"
+            width="41"
+          >
+            <path
+              fill="currentColor"
+              d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h-75l-27.8-44.9c-.7.6-1.4 1.1-2.1 1.7z"
+            />
+          </svg>
+          <span class="govuk-footer__licence-description">
+            All content is available under the
+            <a
+              class="govuk-footer__link"
+              href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+              rel="license"
+            >Open Government Licence v3.0</a>, except where otherwise stated
+          </span>
+        </div>
+        <div class="govuk-footer__meta-item">
+          <a
+            class="govuk-footer__link govuk-footer__copyright-logo"
+            href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+          >© Crown copyright</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ assetPath }}/govuk-frontend.min.js"></script>
+  <script>
+    window.GOVUKFrontend.initAll()
+  </script>
+</body>
+</html>

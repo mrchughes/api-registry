@@ -1,0 +1,213 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {% if error.status === 404 %}
+    <h1 class="govuk-heading-xl">Page not found</h1>
+    
+    <p class="govuk-body">
+      If you typed the web address, check it is correct.
+    </p>
+    
+    <p class="govuk-body">
+      If you pasted the web address, check you copied the entire address.
+    </p>
+    
+    <p class="govuk-body">
+      If the web address is correct or you selected a link or button, 
+      <a href="/contact" class="govuk-link">contact the API Registry team</a> 
+      if you need to speak to someone about the service.
+    </p>
+    
+    {% elif error.status === 403 %}
+    <h1 class="govuk-heading-xl">Access denied</h1>
+    
+    <p class="govuk-body">
+      You do not have permission to access this resource.
+    </p>
+    
+    <p class="govuk-body">
+      This might be because:
+    </p>
+    
+    <ul class="govuk-list govuk-list--bullet">
+      <li>you need to be logged in</li>
+      <li>you don't have the right permissions</li>
+      <li>the resource has been restricted</li>
+    </ul>
+    
+    {% elif error.status === 500 %}
+    <h1 class="govuk-heading-xl">Sorry, there is a problem with the service</h1>
+    
+    <p class="govuk-body">
+      Try again later.
+    </p>
+    
+    <p class="govuk-body">
+      We saved your answers. When the service is working again, you can continue from where you left off.
+    </p>
+    
+    {% if error.message and error.message !== 'Internal Server Error' %}
+    <details class="govuk-details" data-module="govuk-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          Technical details
+        </span>
+      </summary>
+      <div class="govuk-details__text">
+        <p class="govuk-body-s">{{ error.message }}</p>
+        {% if error.id %}
+        <p class="govuk-body-s">Error ID: <code class="app-code">{{ error.id }}</code></p>
+        {% endif %}
+      </div>
+    </details>
+    {% endif %}
+    
+    {% elif error.status === 400 %}
+    <h1 class="govuk-heading-xl">Bad request</h1>
+    
+    <p class="govuk-body">
+      The request you made was not valid.
+    </p>
+    
+    {% if error.message and error.message !== 'Bad Request' %}
+    <div class="govuk-inset-text">
+      <p>{{ error.message }}</p>
+    </div>
+    {% endif %}
+    
+    <p class="govuk-body">
+      Check your request and try again, or 
+      <a href="/contact" class="govuk-link">contact the API Registry team</a> 
+      if you need help.
+    </p>
+    
+    {% elif error.status === 422 %}
+    <h1 class="govuk-heading-xl">Validation error</h1>
+    
+    <p class="govuk-body">
+      The information you provided could not be processed.
+    </p>
+    
+    {% if error.details and error.details.length > 0 %}
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-module="govuk-error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+        There is a problem
+      </h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          {% for detail in error.details %}
+          <li>{{ detail.message }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% elif error.message and error.message !== 'Unprocessable Entity' %}
+    <div class="govuk-inset-text">
+      <p>{{ error.message }}</p>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <h1 class="govuk-heading-xl">Something went wrong</h1>
+    
+    <p class="govuk-body">
+      {% if error.status %}
+      There was a problem with your request (error {{ error.status }}).
+      {% else %}
+      There was an unexpected problem.
+      {% endif %}
+    </p>
+    
+    {% if error.message and error.message !== 'Internal Server Error' and error.message !== 'Bad Request' %}
+    <div class="govuk-inset-text">
+      <p>{{ error.message }}</p>
+    </div>
+    {% endif %}
+    
+    <p class="govuk-body">
+      Try again later, or 
+      <a href="/contact" class="govuk-link">contact the API Registry team</a> 
+      if the problem persists.
+    </p>
+    {% endif %}
+    
+    <h2 class="govuk-heading-m">What you can do next</h2>
+    
+    <ul class="govuk-list">
+      <li><a href="/" class="govuk-link">Go to the API Registry homepage</a></li>
+      <li><a href="/services" class="govuk-link">Browse registered services</a></li>
+      <li><a href="/discovery" class="govuk-link">Use service discovery</a></li>
+      <li><a href="/services/new" class="govuk-link">Register a new service</a></li>
+    </ul>
+    
+    {% if error.status >= 500 %}
+    <div class="govuk-warning-text">
+      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive">Warning</span>
+        If this problem continues, some API Registry services may be temporarily unavailable.
+      </strong>
+    </div>
+    {% endif %}
+  </div>
+  
+  <div class="govuk-grid-column-one-third">
+    <h2 class="govuk-heading-m">Get help</h2>
+    
+    <p class="govuk-body">
+      If you need help using the API Registry, you can:
+    </p>
+    
+    <ul class="govuk-list">
+      <li><a href="/docs" class="govuk-link">Read the documentation</a></li>
+      <li><a href="/contact" class="govuk-link">Contact the support team</a></li>
+      <li><a href="https://github.com/pds-project/api-registry/issues" class="govuk-link">Report a bug on GitHub</a></li>
+    </ul>
+    
+    <h3 class="govuk-heading-s">System Status</h3>
+    
+    <p class="govuk-body-s">
+      API Registry version: {{ version or '2.2.0' }}
+    </p>
+    
+    {% if error.timestamp %}
+    <p class="govuk-body-s">
+      Error occurred: {{ error.timestamp }}
+    </p>
+    {% endif %}
+    
+    {% if error.id %}
+    <p class="govuk-body-s">
+      Reference: <code class="app-code">{{ error.id }}</code>
+    </p>
+    {% endif %}
+    
+    <details class="govuk-details" data-module="govuk-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          Request information
+        </span>
+      </summary>
+      <div class="govuk-details__text">
+        {% if error.method %}
+        <p class="govuk-body-s"><strong>Method:</strong> {{ error.method }}</p>
+        {% endif %}
+        
+        {% if error.url %}
+        <p class="govuk-body-s"><strong>URL:</strong> {{ error.url }}</p>
+        {% endif %}
+        
+        {% if error.userAgent %}
+        <p class="govuk-body-s"><strong>User Agent:</strong> {{ error.userAgent }}</p>
+        {% endif %}
+        
+        {% if error.ip %}
+        <p class="govuk-body-s"><strong>IP:</strong> {{ error.ip }}</p>
+        {% endif %}
+      </div>
+    </details>
+  </div>
+</div>
+{% endblock %}
